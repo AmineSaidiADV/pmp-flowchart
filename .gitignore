@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dev planning files (kept out of repo)
+*-plan.md
+processes-flowchart.md
+webpage-plan.md
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+*.bak
