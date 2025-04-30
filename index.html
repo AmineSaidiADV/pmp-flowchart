@@ -474,6 +474,428 @@ input{font:inherit}
 <!-- D3 from CDN -->
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
+'use strict';
+// ═══════════════════════════════════════════════════════════════════
+//  DATA — PMBOK 6th Edition, All 49 Processes
+// ═══════════════════════════════════════════════════════════════════
+
+const MILESTONES = [
+  { id:'M1',  name:'Project Charter Signed',            producedBy:'4.1',  desc:'The project is formally authorized.' },
+  { id:'M2',  name:'Stakeholder Register Created',      producedBy:'13.1', desc:'All stakeholders identified and documented.' },
+  { id:'M3',  name:'Project Management Plan Approved',  producedBy:'4.2',  desc:'Integrated baseline for all project management.' },
+  { id:'M4',  name:'Scope Baseline Approved',           producedBy:'5.4',  desc:'WBS + Scope Statement + WBS Dictionary finalized.' },
+  { id:'M5',  name:'Schedule Baseline Approved',        producedBy:'6.5',  desc:'Approved project schedule model.' },
+  { id:'M6',  name:'Cost Baseline (Budget) Approved',   producedBy:'7.3',  desc:'Time-phased budget for project performance.' },
+  { id:'M7',  name:'Performance Measurement Baseline',  producedBy:'4.2',  desc:'Integrated scope+schedule+cost baseline (PMB).' },
+  { id:'M8',  name:'Risk Register Established',         producedBy:'11.2', desc:'Individual risks identified and documented.' },
+  { id:'M9',  name:'Procurement Contracts Signed',      producedBy:'12.2', desc:'Agreements with selected sellers in place.' },
+  { id:'M10', name:'Deliverables Produced',             producedBy:'4.3',  desc:'Work results of project execution.' },
+  { id:'M11', name:'Verified Deliverables',             producedBy:'8.3',  desc:'Deliverables confirmed to meet quality requirements.' },
+  { id:'M12', name:'Accepted Deliverables',             producedBy:'5.5',  desc:'Formally accepted by the customer/sponsor.' },
+  { id:'M13', name:'Project/Phase Closed',              producedBy:'4.7',  desc:'Final product/service/result transitioned to operations.' },
+];
+
+const PROCESSES = [
+// ── INITIATING ──────────────────────────────────────────────────
+{
+  id:'4.1', name:'Develop Project Charter', line1:'Develop Project', line2:'Charter',
+  group:'Initiating', ka:'Integration', gridRow:0,
+  purpose:'Formally authorizes the project and documents initial requirements, granting the PM authority to apply organizational resources.',
+  inputs:['Business documents (business case, benefits management plan)','Agreements','Enterprise environmental factors (EEFs)','Organizational process assets (OPAs)'],
+  tools:['Expert judgment','Data gathering (brainstorming, focus groups, interviews)','Interpersonal & team skills (conflict management, facilitation, meeting management)','Meetings'],
+  outputs:[{name:'Project charter',milestone:'M1'},{name:'Assumption log',milestone:null}]
+},
+{
+  id:'13.1', name:'Identify Stakeholders', line1:'Identify', line2:'Stakeholders',
+  group:'Initiating', ka:'Stakeholder', gridRow:0,
+  purpose:'Identify all people/organizations impacted by the project and document relevant information about their interests, involvement, and potential impact.',
+  inputs:['Project charter','Business documents (business case, benefits management plan)','Project management plan','Project documents (change log, issue log, requirements documentation)','Agreements','EEFs','OPAs'],
+  tools:['Expert judgment','Data gathering (questionnaires & surveys, brainstorming)','Data analysis (stakeholder analysis, document analysis)','Data representation (power/interest grid, salience model)','Meetings'],
+  outputs:[{name:'Stakeholder register',milestone:'M2'},{name:'Change requests',milestone:null},{name:'Project management plan updates',milestone:null},{name:'Project documents updates',milestone:null}]
+},
+// ── PLANNING ────────────────────────────────────────────────────
+{
+  id:'4.2', name:'Develop Project Management Plan', line1:'Develop', line2:'Project Mgmt Plan',
+  group:'Planning', ka:'Integration', gridRow:0,
+  purpose:'Define, prepare, and coordinate all plan components and consolidate into an integrated project management plan.',
+  inputs:['Project charter','Outputs from other planning processes','EEFs','OPAs'],
+  tools:['Expert judgment','Data gathering (brainstorming, checklists, focus groups, interviews)','Interpersonal & team skills (conflict management, facilitation)','Meetings'],
+  outputs:[{name:'Project management plan (scope, schedule, cost, quality, resource, comms, risk, procurement, stakeholder mgmt plans + baselines + change mgmt plan + configuration mgmt plan + performance measurement baseline + project lifecycle)',milestone:'M3'},{name:'[contains M7: Performance Measurement Baseline]',milestone:'M7'}]
+},
+{
+  id:'5.1', name:'Plan Scope Management', line1:'Plan Scope', line2:'Management',
+  group:'Planning', ka:'Scope', gridRow:0,
+  purpose:'Create a scope management plan documenting how the project and product scope will be defined, validated, and controlled.',
+  inputs:['Project charter','Project management plan (quality mgmt plan, project lifecycle description, development approach)','EEFs','OPAs'],
+  tools:['Expert judgment','Data analysis (alternatives analysis)','Meetings'],
+  outputs:[{name:'Scope management plan',milestone:null},{name:'Requirements management plan',milestone:null}]
+},
+{
+  id:'5.2', name:'Collect Requirements', line1:'Collect', line2:'Requirements',
+  group:'Planning', ka:'Scope', gridRow:1,
+  purpose:'Determine, document, and manage stakeholder needs and requirements to meet project objectives.',
+  inputs:['Project charter','Project management plan (scope mgmt plan, requirements mgmt plan, stakeholder engagement plan)','Project documents (assumption log, lessons learned register, stakeholder register)','Business documents','Agreements','EEFs','OPAs'],
+  tools:['Expert judgment','Data gathering (brainstorming, interviews, focus groups, questionnaires & surveys, benchmarking)','Data analysis (document analysis)','Decision making (voting, autocratic, multicriteria decision analysis)','Data representation (affinity diagrams, mind mapping)','Interpersonal & team skills (nominal group technique, observation, facilitation)','Context diagram','Prototypes'],
+  outputs:[{name:'Requirements documentation',milestone:null},{name:'Requirements traceability matrix',milestone:null}]
+},
+{
+  id:'5.3', name:'Define Scope', line1:'Define Scope', line2:'',
+  group:'Planning', ka:'Scope', gridRow:2,
+  purpose:'Develop a detailed description of the project and product.',
+  inputs:['Project charter','Project management plan (scope mgmt plan)','Project documents (assumption log, requirements documentation, risk register)','EEFs','OPAs'],
+  tools:['Expert judgment','Data analysis (alternatives analysis)','Decision making (multicriteria decision analysis)','Interpersonal & team skills (facilitation)','Product analysis'],
+  outputs:[{name:'Project scope statement',milestone:null},{name:'Project documents updates (assumption log, requirements documentation, requirements traceability matrix, stakeholder register)',milestone:null}]
+},
+{
+  id:'5.4', name:'Create WBS', line1:'Create WBS', line2:'',
+  group:'Planning', ka:'Scope', gridRow:3,
+  purpose:'Subdivide project deliverables and work into smaller, more manageable components.',
+  inputs:['Project management plan (scope mgmt plan)','Project documents (project scope statement, requirements documentation)','EEFs','OPAs'],
+  tools:['Expert judgment','Decomposition'],
+  outputs:[{name:'Scope baseline (project scope statement + WBS + WBS dictionary)',milestone:'M4'},{name:'Project documents updates (assumption log, requirements documentation)',milestone:null}]
+},
+{
+  id:'6.1', name:'Plan Schedule Management', line1:'Plan Schedule', line2:'Management',
+  group:'Planning', ka:'Schedule', gridRow:0,
+  purpose:'Establish policies, procedures, and documentation for planning, developing, managing, executing, and controlling the project schedule.',
+  inputs:['Project charter','Project management plan (scope mgmt plan, development approach)','EEFs','OPAs'],
+  tools:['Expert judgment','Data analysis (alternatives analysis)','Meetings'],
+  outputs:[{name:'Schedule management plan',milestone:null}]
+},
+{
+  id:'6.2', name:'Define Activities', line1:'Define', line2:'Activities',
+  group:'Planning', ka:'Schedule', gridRow:1,
+  purpose:'Identify and document the specific actions to be performed to produce the project deliverables.',
+  inputs:['Project management plan (schedule mgmt plan, scope baseline)','EEFs','OPAs'],
+  tools:['Expert judgment','Decomposition','Rolling wave planning','Meetings'],
+  outputs:[{name:'Activity list',milestone:null},{name:'Activity attributes',milestone:null},{name:'Milestone list',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates',milestone:null}]
+},
+{
+  id:'6.3', name:'Sequence Activities', line1:'Sequence', line2:'Activities',
+  group:'Planning', ka:'Schedule', gridRow:2,
+  purpose:'Identify and document relationships among project activities.',
+  inputs:['Project management plan (schedule mgmt plan, scope baseline)','Project documents (activity attributes, activity list, assumption log, milestone list)','EEFs','OPAs'],
+  tools:['Precedence diagramming method (PDM)','Dependency determination & integration (mandatory, discretionary, external, internal)','Leads and lags','Project management information system (PMIS)'],
+  outputs:[{name:'Project schedule network diagrams',milestone:null},{name:'Project documents updates (activity attributes, activity list, assumption log, milestone list)',milestone:null}]
+},
+{
+  id:'6.4', name:'Estimate Activity Durations', line1:'Estimate Activity', line2:'Durations',
+  group:'Planning', ka:'Schedule', gridRow:3,
+  purpose:'Estimate the number of work periods needed to complete individual activities.',
+  inputs:['Project management plan (schedule mgmt plan, scope baseline)','Project documents (activity attributes, activity list, assumption log, lessons learned register, milestone list, team assignments, resource calendars, resource requirements, risk register)','EEFs','OPAs'],
+  tools:['Expert judgment','Analogous estimating','Parametric estimating','Three-point estimating (PERT: tE=(tO+4tM+tP)/6)','Bottom-up estimating','Data analysis (alternatives analysis, reserve analysis)','Decision making','Meetings'],
+  outputs:[{name:'Duration estimates',milestone:null},{name:'Basis of estimates',milestone:null},{name:'Project documents updates (activity attributes, assumption log, lessons learned register)',milestone:null}]
+},
+{
+  id:'6.5', name:'Develop Schedule', line1:'Develop', line2:'Schedule',
+  group:'Planning', ka:'Schedule', gridRow:4,
+  purpose:'Analyze activity sequences, durations, resource requirements, and schedule constraints to create the project schedule model.',
+  inputs:['Project management plan (schedule mgmt plan, scope baseline)','Project documents (activity attributes, activity list, assumption log, basis of estimates, duration estimates, lessons learned register, milestone list, schedule network diagrams, team assignments, resource calendars, resource requirements, risk register)','Agreements','EEFs','OPAs'],
+  tools:['Schedule network analysis','Critical path method','Resource optimization (leveling, smoothing)','Data analysis (what-if scenario analysis, Monte Carlo simulation)','Leads and lags','Schedule compression (crashing, fast tracking)','PMIS','Agile release planning'],
+  outputs:[{name:'Schedule baseline',milestone:'M5'},{name:'Project schedule (Gantt, milestone charts, network diagrams)',milestone:null},{name:'Schedule data',milestone:null},{name:'Project calendars',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates',milestone:null},{name:'Project documents updates',milestone:null}]
+},
+{
+  id:'7.1', name:'Plan Cost Management', line1:'Plan Cost', line2:'Management',
+  group:'Planning', ka:'Cost', gridRow:0,
+  purpose:'Define how project costs will be estimated, budgeted, managed, monitored, and controlled.',
+  inputs:['Project charter','Project management plan (schedule mgmt plan, risk mgmt plan)','EEFs','OPAs'],
+  tools:['Expert judgment','Data analysis (alternatives analysis)','Meetings'],
+  outputs:[{name:'Cost management plan',milestone:null}]
+},
+{
+  id:'7.2', name:'Estimate Costs', line1:'Estimate Costs', line2:'',
+  group:'Planning', ka:'Cost', gridRow:1,
+  purpose:'Develop an approximation of the monetary resources needed to complete project activities.',
+  inputs:['Project management plan (cost mgmt plan, quality mgmt plan, scope baseline, resource mgmt plan)','Project documents (lessons learned register, project schedule, resource requirements, risk register)','EEFs','OPAs'],
+  tools:['Expert judgment','Analogous estimating','Parametric estimating','Bottom-up estimating','Three-point estimating','Data analysis (alternatives analysis, reserve analysis, cost of quality)','PMIS','Decision making (voting)'],
+  outputs:[{name:'Cost estimates',milestone:null},{name:'Basis of estimates',milestone:null},{name:'Project documents updates (assumption log, lessons learned register, risk register)',milestone:null}]
+},
+{
+  id:'7.3', name:'Determine Budget', line1:'Determine', line2:'Budget',
+  group:'Planning', ka:'Cost', gridRow:2,
+  purpose:'Aggregate estimated costs of individual activities or work packages to establish an authorized cost baseline.',
+  inputs:['Project management plan (cost mgmt plan, resource mgmt plan, scope baseline)','Project documents (basis of estimates, cost estimates, project schedule, risk register)','Business documents (business case, benefits management plan)','Agreements','OPAs'],
+  tools:['Expert judgment','Cost aggregation','Data analysis (reserve analysis)','Historical information review','Funding limit reconciliation','Financing'],
+  outputs:[{name:'Cost baseline',milestone:'M6'},{name:'Project funding requirements',milestone:null},{name:'Project documents updates (cost estimates, project schedule, risk register)',milestone:null}]
+},
+{
+  id:'8.1', name:'Plan Quality Management', line1:'Plan Quality', line2:'Management',
+  group:'Planning', ka:'Quality', gridRow:0,
+  purpose:'Identify quality requirements and standards for the project and its deliverables, and document how the project will demonstrate compliance.',
+  inputs:['Project charter','Project management plan (requirements mgmt plan, risk mgmt plan, stakeholder engagement plan, scope baseline)','Project documents (assumption log, requirements documentation, requirements traceability matrix, risk register, stakeholder register)','EEFs','OPAs'],
+  tools:['Expert judgment','Data gathering (benchmarking, brainstorming, interviews)','Data analysis (cost-benefit analysis, cost of quality — COQ)','Decision making (multicriteria decision analysis)','Data representation (flowcharts, logical data model, matrix diagrams, mind mapping)','Test and inspection planning','Meetings'],
+  outputs:[{name:'Quality management plan',milestone:null},{name:'Quality metrics',milestone:null},{name:'Project management plan updates (risk mgmt plan)',milestone:null},{name:'Project documents updates (lessons learned register, requirements traceability matrix, risk register, stakeholder register)',milestone:null}]
+},
+{
+  id:'9.1', name:'Plan Resource Management', line1:'Plan Resource', line2:'Management',
+  group:'Planning', ka:'Resource', gridRow:0,
+  purpose:'Define how to estimate, acquire, manage, and use team and physical resources.',
+  inputs:['Project charter','Project management plan (quality mgmt plan, scope baseline)','Project documents (project schedule, requirements documentation, risk register, stakeholder register)','EEFs','OPAs'],
+  tools:['Expert judgment','Data representation (OBS/RBS, RACI matrix, text-oriented formats)','Organizational theory','Meetings'],
+  outputs:[{name:'Resource management plan',milestone:null},{name:'Team charter',milestone:null},{name:'Project documents updates (assumption log, risk register)',milestone:null}]
+},
+{
+  id:'9.2', name:'Estimate Activity Resources', line1:'Estimate Activity', line2:'Resources',
+  group:'Planning', ka:'Resource', gridRow:1,
+  purpose:'Estimate team resources and the type and quantities of material, equipment, and supplies needed to perform project work.',
+  inputs:['Project management plan (resource mgmt plan, scope baseline)','Project documents (activity attributes, activity list, assumption log, cost estimates, resource calendars, risk register)','EEFs','OPAs'],
+  tools:['Expert judgment','Bottom-up estimating','Analogous estimating','Parametric estimating','Data analysis (alternatives analysis)','PMIS','Meetings'],
+  outputs:[{name:'Resource requirements',milestone:null},{name:'Basis of estimates',milestone:null},{name:'Resource breakdown structure (RBS)',milestone:null},{name:'Project documents updates (activity attributes, assumption log, lessons learned register)',milestone:null}]
+},
+{
+  id:'10.1', name:'Plan Communications Management', line1:'Plan Comms', line2:'Management',
+  group:'Planning', ka:'Communications', gridRow:0,
+  purpose:'Develop an appropriate approach and plan for project communications activities based on the information needs of each stakeholder.',
+  inputs:['Project charter','Project management plan (resource mgmt plan, stakeholder engagement plan)','Project documents (requirements documentation, stakeholder register)','EEFs','OPAs'],
+  tools:['Expert judgment','Communication requirements analysis','Communication technology','Communication models (sender-receiver)','Communication methods (interactive, push, pull)','Interpersonal & team skills (comms styles assessment, political awareness, cultural awareness)','Data representation (stakeholder engagement assessment matrix)','Meetings'],
+  outputs:[{name:'Communications management plan',milestone:null},{name:'Project management plan updates (stakeholder engagement plan)',milestone:null},{name:'Project documents updates (project schedule, stakeholder register)',milestone:null}]
+},
+{
+  id:'11.1', name:'Plan Risk Management', line1:'Plan Risk', line2:'Management',
+  group:'Planning', ka:'Risk', gridRow:0,
+  purpose:'Define how to conduct risk management activities for a project.',
+  inputs:['Project charter','Project management plan (all components)','Project documents (stakeholder register)','EEFs','OPAs'],
+  tools:['Expert judgment','Data analysis (stakeholder analysis)','Meetings'],
+  outputs:[{name:'Risk management plan',milestone:null}]
+},
+{
+  id:'11.2', name:'Identify Risks', line1:'Identify Risks', line2:'',
+  group:'Planning', ka:'Risk', gridRow:1,
+  purpose:'Identify individual project risks as well as sources of overall project risk, and document their characteristics.',
+  inputs:['Project management plan (requirements mgmt plan, schedule mgmt plan, cost mgmt plan, quality mgmt plan, resource mgmt plan, risk mgmt plan, scope baseline, schedule baseline, cost baseline)','Project documents (assumption log, cost estimates, duration estimates, issue log, lessons learned register, requirements documentation, resource requirements, stakeholder register)','Agreements','Procurement documentation','EEFs','OPAs'],
+  tools:['Expert judgment','Data gathering (brainstorming, checklists, interviews)','Data analysis (root cause analysis, assumption & constraint analysis, SWOT analysis, document analysis)','Interpersonal & team skills (facilitation)','Prompt lists','Meetings'],
+  outputs:[{name:'Risk register',milestone:'M8'},{name:'Risk report',milestone:null},{name:'Project documents updates (assumption log, issue log, lessons learned register)',milestone:null}]
+},
+{
+  id:'11.3', name:'Perform Qualitative Risk Analysis', line1:'Qualitative Risk', line2:'Analysis',
+  group:'Planning', ka:'Risk', gridRow:2,
+  purpose:'Prioritize individual project risks for further analysis or action by assessing probability of occurrence and impact.',
+  inputs:['Project management plan (risk mgmt plan)','Project documents (assumption log, risk register, stakeholder register)','EEFs','OPAs'],
+  tools:['Expert judgment','Data gathering (interviews)','Data analysis (risk data quality assessment, risk probability & impact assessment, assessment of urgency/proximity/detectability/manageability)','Interpersonal & team skills (facilitation)','Risk categorization','Data representation (probability & impact matrix, bubble charts)','Meetings'],
+  outputs:[{name:'Project documents updates (assumption log, issue log, risk register with priority ratings, risk report)',milestone:null}]
+},
+{
+  id:'11.4', name:'Perform Quantitative Risk Analysis', line1:'Quantitative Risk', line2:'Analysis',
+  group:'Planning', ka:'Risk', gridRow:3,
+  purpose:'Numerically analyze the combined effect of identified individual risks and other sources of uncertainty on overall project objectives.',
+  inputs:['Project management plan (risk mgmt plan, scope baseline, schedule baseline, cost baseline)','Project documents (assumption log, basis of estimates, cost estimates, cost forecasts, duration estimates, milestone list, resource requirements, risk register, risk report, schedule forecasts)','EEFs','OPAs'],
+  tools:['Expert judgment','Data gathering (interviews)','Interpersonal & team skills (facilitation)','Representations of uncertainty (probability distributions)','Data analysis (Monte Carlo simulation, sensitivity analysis/tornado diagram, decision tree analysis, influence diagrams)'],
+  outputs:[{name:'Project documents updates (risk register, risk report — probabilistic analysis, probability of achieving cost/time objectives, prioritized risk list)',milestone:null}]
+},
+{
+  id:'11.5', name:'Plan Risk Responses', line1:'Plan Risk', line2:'Responses',
+  group:'Planning', ka:'Risk', gridRow:4,
+  purpose:'Develop options, select strategies, and agree on actions to address overall project risk exposure and individual project risks.',
+  inputs:['Project management plan (resource mgmt plan, risk mgmt plan)','Project documents (lessons learned register, project schedule, team assignments, resource calendars, risk register, risk report, stakeholder register)','EEFs','OPAs'],
+  tools:['Expert judgment','Data gathering (interviews)','Interpersonal & team skills (facilitation)','Strategies for threats (escalate, avoid, transfer, mitigate, accept)','Strategies for opportunities (escalate, exploit, share, enhance, accept)','Contingent response strategies','Strategies for overall project risk','Data analysis (alternatives analysis, cost-benefit analysis)','Decision making (multicriteria decision analysis)'],
+  outputs:[{name:'Change requests',milestone:null},{name:'Project management plan updates (schedule mgmt plan, cost mgmt plan, quality mgmt plan, resource mgmt plan, procurement mgmt plan, scope/schedule/cost baselines)',milestone:null},{name:'Project documents updates (assumption log, cost forecasts, lessons learned register, project schedule, team assignments, risk register, risk report)',milestone:null}]
+},
+{
+  id:'12.1', name:'Plan Procurement Management', line1:'Plan Procurement', line2:'Management',
+  group:'Planning', ka:'Procurement', gridRow:0,
+  purpose:'Document project procurement decisions, specify the approach, and identify potential sellers.',
+  inputs:['Project charter','Business documents (business case, benefits management plan)','Project management plan (scope mgmt plan, quality mgmt plan, resource mgmt plan, risk mgmt plan, scope/schedule/cost baselines)','Project documents (milestone list, team assignments, requirements documentation, requirements traceability matrix, resource requirements, risk register, stakeholder register)','EEFs','OPAs'],
+  tools:['Expert judgment','Data gathering (market research)','Data analysis (make-or-buy analysis)','Source selection analysis','Meetings'],
+  outputs:[{name:'Procurement management plan',milestone:null},{name:'Procurement strategy',milestone:null},{name:'Bid documents (RFI, RFQ, RFP)',milestone:null},{name:'Procurement statement of work',milestone:null},{name:'Source selection criteria',milestone:null},{name:'Make-or-buy decisions',milestone:null},{name:'Independent cost estimates',milestone:null},{name:'Change requests',milestone:null},{name:'Project documents updates',milestone:null}]
+},
+{
+  id:'13.2', name:'Plan Stakeholder Engagement', line1:'Plan Stakeholder', line2:'Engagement',
+  group:'Planning', ka:'Stakeholder', gridRow:0,
+  purpose:'Develop approaches to involve project stakeholders based on their needs, expectations, interests, and potential impact on the project.',
+  inputs:['Project charter','Project management plan (resource mgmt plan, comms mgmt plan, risk mgmt plan)','Project documents (assumption log, change log, issue log, project schedule, risk register, stakeholder register)','Agreements','EEFs','OPAs'],
+  tools:['Expert judgment','Data gathering (benchmarking)','Data analysis (assumption & constraint analysis, root cause analysis)','Decision making (prioritization/ranking)','Data representation (mind mapping, stakeholder engagement assessment matrix — Unaware/Resistant/Neutral/Supportive/Leading)','Meetings'],
+  outputs:[{name:'Stakeholder engagement plan',milestone:null}]
+},
+// ── EXECUTING ───────────────────────────────────────────────────
+{
+  id:'4.3', name:'Direct and Manage Project Work', line1:'Direct & Manage', line2:'Project Work',
+  group:'Executing', ka:'Integration', gridRow:0,
+  purpose:'Lead and perform the work defined in the project management plan and implement approved changes to achieve project objectives.',
+  inputs:['Project management plan (all components)','Project documents (change log, lessons learned register, milestone list, project comms, project schedule, requirements traceability matrix, risk register, risk report)','Approved change requests','EEFs','OPAs'],
+  tools:['Expert judgment','PMIS','Meetings'],
+  outputs:[{name:'Deliverables',milestone:'M10'},{name:'Work performance data',milestone:null},{name:'Issue log',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates',milestone:null},{name:'Project documents updates (activity list, assumption log, lessons learned register, requirements documentation, risk register, stakeholder register)',milestone:null},{name:'OPA updates',milestone:null}]
+},
+{
+  id:'4.4', name:'Manage Project Knowledge', line1:'Manage Project', line2:'Knowledge',
+  group:'Executing', ka:'Integration', gridRow:1,
+  purpose:'Use existing knowledge and create new knowledge to achieve project objectives and contribute to organizational learning.',
+  inputs:['Project management plan (all components)','Project documents (lessons learned register, team assignments, resource breakdown structure, source selection criteria, stakeholder register)','Deliverables','EEFs','OPAs'],
+  tools:['Expert judgment','Knowledge management (communities of practice, meetings, shadowing, story-telling, creativity techniques)','Information management (lessons learned register, library services, web searches)','Interpersonal & team skills (active listening, facilitation, leadership, networking, political awareness)'],
+  outputs:[{name:'Lessons learned register',milestone:null},{name:'Project management plan updates',milestone:null},{name:'OPA updates',milestone:null}]
+},
+{
+  id:'8.2', name:'Manage Quality', line1:'Manage Quality', line2:'',
+  group:'Executing', ka:'Quality', gridRow:0,
+  purpose:'Translate the quality management plan into executable quality activities that incorporate organizational quality policies into the project.',
+  inputs:['Project management plan (quality mgmt plan)','Project documents (lessons learned register, quality control measurements, quality metrics, risk report)','OPAs'],
+  tools:['Data gathering (checklists)','Data analysis (alternatives analysis, document analysis, process analysis, root cause analysis)','Decision making (multicriteria decision analysis)','Data representation (affinity diagrams, cause-and-effect diagrams, flowcharts, histograms, matrix diagrams, scatter diagrams)','Audits','Design for X (DfX)','Problem solving','Quality improvement methods (PDCA, Six Sigma)'],
+  outputs:[{name:'Quality reports',milestone:null},{name:'Test and evaluation documents',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates (quality mgmt plan, scope/schedule/cost baselines)',milestone:null},{name:'Project documents updates (issue log, lessons learned register, risk register)',milestone:null}]
+},
+{
+  id:'9.3', name:'Acquire Resources', line1:'Acquire', line2:'Resources',
+  group:'Executing', ka:'Resource', gridRow:0,
+  purpose:'Obtain team members, facilities, equipment, materials, supplies, and other resources necessary to complete project work.',
+  inputs:['Project management plan (resource mgmt plan, procurement mgmt plan, cost baseline)','Project documents (project schedule, resource calendars, resource requirements, stakeholder register)','EEFs','OPAs'],
+  tools:['Decision making (multicriteria decision analysis)','Interpersonal & team skills (negotiation)','Pre-assignment','Virtual teams'],
+  outputs:[{name:'Physical resource assignments',milestone:null},{name:'Project team assignments',milestone:null},{name:'Resource calendars',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates (resource mgmt plan, cost baseline)',milestone:null},{name:'Project documents updates (lessons learned register, project schedule, resource breakdown structure, resource requirements, risk register, stakeholder register)',milestone:null},{name:'EEF updates',milestone:null},{name:'OPA updates',milestone:null}]
+},
+{
+  id:'9.4', name:'Develop Team', line1:'Develop Team', line2:'',
+  group:'Executing', ka:'Resource', gridRow:1,
+  purpose:'Improve competencies, team member interaction, and the overall team environment to enhance project performance.',
+  inputs:['Project management plan (resource mgmt plan)','Project documents (lessons learned register, project schedule, team assignments, resource calendars, team charter)','EEFs','OPAs'],
+  tools:['Colocation (war room)','Virtual teams','Communication technology','Interpersonal & team skills (conflict management, influencing, motivation, negotiation, team building)','Recognition and rewards','Training','Individual and team assessments','Meetings'],
+  outputs:[{name:'Team performance assessments',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates (resource mgmt plan)',milestone:null},{name:'Project documents updates (lessons learned register, project schedule, team assignments, resource calendars, team charter)',milestone:null},{name:'EEF updates',milestone:null},{name:'OPA updates',milestone:null}]
+},
+{
+  id:'9.5', name:'Manage Team', line1:'Manage Team', line2:'',
+  group:'Executing', ka:'Resource', gridRow:2,
+  purpose:'Track team member performance, provide feedback, resolve issues, and manage team changes to optimize project performance.',
+  inputs:['Project management plan (resource mgmt plan)','Project documents (issue log, lessons learned register, team assignments, team charter)','Work performance reports','Team performance assessments','EEFs','OPAs'],
+  tools:['Interpersonal & team skills (conflict management — Thomas-Kilmann, decision making, emotional intelligence, influencing, leadership)','PMIS'],
+  outputs:[{name:'Change requests',milestone:null},{name:'Project management plan updates (resource mgmt plan, schedule baseline, cost baseline)',milestone:null},{name:'Project documents updates (issue log, lessons learned register, team assignments)',milestone:null},{name:'EEF updates',milestone:null},{name:'OPA updates',milestone:null}]
+},
+{
+  id:'10.2', name:'Manage Communications', line1:'Manage', line2:'Communications',
+  group:'Executing', ka:'Communications', gridRow:0,
+  purpose:'Ensure timely and appropriate collection, creation, distribution, storage, retrieval, management, monitoring, and disposition of project information.',
+  inputs:['Project management plan (resource mgmt plan, comms mgmt plan, stakeholder engagement plan)','Project documents (change log, issue log, lessons learned register, quality report, risk report, stakeholder register)','Work performance reports','EEFs','OPAs'],
+  tools:['Communication technology','Communication methods (interactive, push, pull)','Communication skills (competence, feedback, nonverbal, presentations)','PMIS','Project reporting','Interpersonal & team skills (active listening, conflict management, cultural awareness, meeting management, networking, political awareness)','Meetings'],
+  outputs:[{name:'Project communications',milestone:null},{name:'Project management plan updates (comms mgmt plan, stakeholder engagement plan)',milestone:null},{name:'Project documents updates (issue log, lessons learned register, project schedule, risk register, stakeholder register)',milestone:null},{name:'OPA updates',milestone:null}]
+},
+{
+  id:'11.6', name:'Implement Risk Responses', line1:'Implement Risk', line2:'Responses',
+  group:'Executing', ka:'Risk', gridRow:0,
+  purpose:'Implement agreed-upon risk response plans.',
+  inputs:['Project management plan (risk mgmt plan)','Project documents (lessons learned register, risk register, risk report)','OPAs'],
+  tools:['Expert judgment','Interpersonal & team skills (influencing)','PMIS'],
+  outputs:[{name:'Change requests',milestone:null},{name:'Project documents updates (issue log, lessons learned register, team assignments, risk register, risk report)',milestone:null}]
+},
+{
+  id:'12.2', name:'Conduct Procurements', line1:'Conduct', line2:'Procurements',
+  group:'Executing', ka:'Procurement', gridRow:0,
+  purpose:'Obtain seller responses, select a seller, and award a contract.',
+  inputs:['Project management plan (scope mgmt plan, requirements mgmt plan, comms mgmt plan, risk mgmt plan, procurement mgmt plan, configuration mgmt plan, cost baseline)','Project documents (lessons learned register, project schedule, requirements documentation, risk register, stakeholder register)','Procurement documentation (bid documents, procurement SOW, independent cost estimates, source selection criteria)','Seller proposals','EEFs','OPAs'],
+  tools:['Expert judgment','Advertising','Bidder conferences','Data analysis (proposal evaluation)','Interpersonal & team skills (negotiation)'],
+  outputs:[{name:'Selected sellers',milestone:null},{name:'Agreements (contracts)',milestone:'M9'},{name:'Change requests',milestone:null},{name:'Project management plan updates',milestone:null},{name:'Project documents updates',milestone:null},{name:'OPA updates',milestone:null}]
+},
+{
+  id:'13.3', name:'Manage Stakeholder Engagement', line1:'Manage Stakeholder', line2:'Engagement',
+  group:'Executing', ka:'Stakeholder', gridRow:0,
+  purpose:'Communicate and work with stakeholders to meet needs and expectations, address issues, and foster appropriate stakeholder involvement.',
+  inputs:['Project management plan (comms mgmt plan, risk mgmt plan, stakeholder engagement plan)','Project documents (change log, issue log, lessons learned register, stakeholder register)','EEFs','OPAs'],
+  tools:['Expert judgment','Communication skills (feedback, presentations)','Interpersonal & team skills (active listening, conflict management, cultural awareness, leadership, meeting management, networking, political awareness, relationship management)','Ground rules','Meetings'],
+  outputs:[{name:'Change requests',milestone:null},{name:'Project management plan updates (comms mgmt plan, stakeholder engagement plan)',milestone:null},{name:'Project documents updates (change log, issue log, lessons learned register, stakeholder register)',milestone:null}]
+},
+// ── MONITORING & CONTROLLING ─────────────────────────────────────
+{
+  id:'4.5', name:'Monitor and Control Project Work', line1:'Monitor & Control', line2:'Project Work',
+  group:'Monitoring & Controlling', ka:'Integration', gridRow:0,
+  purpose:'Track, review, and report overall progress to meet the performance objectives defined in the project management plan.',
+  inputs:['Project management plan (all components)','Project documents (assumption log, basis of estimates, cost forecasts, issue log, lessons learned register, milestone list, quality reports, risk register, risk report, schedule forecasts)','Work performance information','Agreements','EEFs','OPAs'],
+  tools:['Expert judgment','Data analysis (alternatives analysis, cost-benefit analysis, EVM, root cause analysis, trend analysis, variance analysis)','Decision making','Meetings'],
+  outputs:[{name:'Work performance reports (status reports, memos, dashboards, recommendations)',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates',milestone:null},{name:'Project documents updates (cost forecasts, issue log, lessons learned register, risk register, schedule forecasts)',milestone:null}]
+},
+{
+  id:'4.6', name:'Perform Integrated Change Control', line1:'Integrated', line2:'Change Control',
+  group:'Monitoring & Controlling', ka:'Integration', gridRow:1,
+  purpose:'Review all change requests; approve changes and manage changes to deliverables, project documents, and the PMP; and communicate decisions.',
+  inputs:['Project management plan (change mgmt plan, configuration mgmt plan, scope baseline, schedule baseline, cost baseline)','Project documents (basis of estimates, requirements traceability matrix, risk report)','Work performance reports','Change requests','EEFs','OPAs'],
+  tools:['Expert judgment','Change control tools','Data analysis (alternatives analysis, cost-benefit analysis)','Decision making (voting, autocratic, multicriteria decision analysis)','Meetings (Change Control Board — CCB)'],
+  outputs:[{name:'Approved change requests',milestone:null},{name:'Project management plan updates',milestone:null},{name:'Project documents updates (change log)',milestone:null}]
+},
+{
+  id:'5.5', name:'Validate Scope', line1:'Validate Scope', line2:'',
+  group:'Monitoring & Controlling', ka:'Scope', gridRow:0,
+  purpose:'Formalize acceptance of the completed project deliverables.',
+  inputs:['Project management plan (scope mgmt plan, requirements mgmt plan, scope baseline)','Project documents (lessons learned register, quality reports, requirements documentation, requirements traceability matrix)','Verified deliverables (from 8.3 Control Quality)','Work performance data'],
+  tools:['Inspection (reviews, walkthroughs, audits)','Decision making (voting)'],
+  outputs:[{name:'Accepted deliverables',milestone:'M12'},{name:'Work performance information',milestone:null},{name:'Change requests',milestone:null},{name:'Project documents updates (lessons learned register, requirements documentation, requirements traceability matrix)',milestone:null}]
+},
+{
+  id:'5.6', name:'Control Scope', line1:'Control Scope', line2:'',
+  group:'Monitoring & Controlling', ka:'Scope', gridRow:1,
+  purpose:'Monitor the status of the project and product scope and manage changes to the scope baseline.',
+  inputs:['Project management plan (scope mgmt plan, requirements mgmt plan, change mgmt plan, configuration mgmt plan, scope baseline, performance measurement baseline)','Project documents (lessons learned register, requirements documentation, requirements traceability matrix)','Work performance data','OPAs'],
+  tools:['Data analysis (variance analysis, trend analysis)'],
+  outputs:[{name:'Work performance information',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates (scope baseline, schedule baseline, cost baseline, performance measurement baseline)',milestone:null},{name:'Project documents updates (lessons learned register, requirements documentation, requirements traceability matrix)',milestone:null}]
+},
+{
+  id:'6.6', name:'Control Schedule', line1:'Control', line2:'Schedule',
+  group:'Monitoring & Controlling', ka:'Schedule', gridRow:0,
+  purpose:'Monitor the status of the project to update the project schedule and manage changes to the schedule baseline.',
+  inputs:['Project management plan (schedule mgmt plan, schedule baseline, scope baseline, performance measurement baseline)','Project documents (lessons learned register, project calendars, project schedule, resource calendars, schedule data)','Work performance data','OPAs'],
+  tools:['Data analysis (EVM — SV/SPI, iteration burndown chart, performance reviews, trend analysis, variance analysis, what-if scenario analysis)','Critical path method','PMIS','Resource optimization','Leads and lags','Schedule compression'],
+  outputs:[{name:'Work performance information',milestone:null},{name:'Schedule forecasts',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates (schedule mgmt plan, schedule baseline, cost baseline, performance measurement baseline)',milestone:null},{name:'Project documents updates (assumption log, basis of estimates, lessons learned register, project schedule, resource calendars, risk register, schedule data)',milestone:null}]
+},
+{
+  id:'7.4', name:'Control Costs', line1:'Control Costs', line2:'',
+  group:'Monitoring & Controlling', ka:'Cost', gridRow:0,
+  purpose:'Monitor the status of the project to update the project costs and manage changes to the cost baseline.',
+  inputs:['Project management plan (cost mgmt plan, cost baseline, performance measurement baseline)','Project documents (lessons learned register, project funding requirements)','Work performance data','OPAs'],
+  tools:['Expert judgment','Data analysis (EVM — CV/CPI/EV/PV/AC, variance analysis, trend analysis, reserve analysis)','To-complete performance index (TCPI)','PMIS'],
+  outputs:[{name:'Work performance information',milestone:null},{name:'Cost forecasts (EAC, ETC)',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates (cost mgmt plan, cost baseline, performance measurement baseline)',milestone:null},{name:'Project documents updates (assumption log, basis of estimates, cost estimates, lessons learned register, risk register)',milestone:null}]
+},
+{
+  id:'8.3', name:'Control Quality', line1:'Control Quality', line2:'',
+  group:'Monitoring & Controlling', ka:'Quality', gridRow:0,
+  purpose:'Monitor and record results of executing quality management activities to assess performance and ensure project outputs are complete, correct, and meet customer expectations.',
+  inputs:['Project management plan (quality mgmt plan)','Project documents (lessons learned register, quality metrics, test and evaluation documents)','Approved change requests','Deliverables','Work performance data','EEFs','OPAs'],
+  tools:['Data gathering (checklists, check sheets, statistical sampling, questionnaires & surveys)','Data analysis (performance reviews, root cause analysis)','Inspection','Testing/product evaluations','Data representation (cause-and-effect diagrams, control charts, histogram, scatter diagrams)','Meetings'],
+  outputs:[{name:'Quality control measurements',milestone:null},{name:'Verified deliverables',milestone:'M11'},{name:'Work performance information',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates (quality mgmt plan)',milestone:null},{name:'Project documents updates (issue log, lessons learned register, risk register, test and evaluation documents)',milestone:null}]
+},
+{
+  id:'9.6', name:'Control Resources', line1:'Control', line2:'Resources',
+  group:'Monitoring & Controlling', ka:'Resource', gridRow:0,
+  purpose:'Ensure that the physical resources assigned and allocated to the project are available as planned, and monitor planned versus actual resource utilization.',
+  inputs:['Project management plan (resource mgmt plan)','Project documents (issue log, lessons learned register, physical resource assignments, project schedule, resource breakdown structure, resource requirements, risk register)','Work performance data','Agreements','OPAs'],
+  tools:['Data analysis (alternatives analysis, cost-benefit analysis, performance reviews, trend analysis)','Problem solving','Interpersonal & team skills (negotiation, influencing)','PMIS'],
+  outputs:[{name:'Work performance information',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates (resource mgmt plan, schedule baseline, cost baseline)',milestone:null},{name:'Project documents updates (assumption log, issue log, lessons learned register, physical resource assignments, resource breakdown structure, risk register)',milestone:null}]
+},
+{
+  id:'10.3', name:'Monitor Communications', line1:'Monitor', line2:'Communications',
+  group:'Monitoring & Controlling', ka:'Communications', gridRow:0,
+  purpose:'Ensure the information needs of the project and its stakeholders are met.',
+  inputs:['Project management plan (resource mgmt plan, comms mgmt plan, stakeholder engagement plan)','Project documents (issue log, lessons learned register, project comms)','Work performance data','EEFs','OPAs'],
+  tools:['Expert judgment','PMIS','Data representation (stakeholder engagement assessment matrix)','Interpersonal & team skills (observation/conversation)','Meetings'],
+  outputs:[{name:'Work performance information',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates (comms mgmt plan, stakeholder engagement plan)',milestone:null},{name:'Project documents updates (issue log, lessons learned register, project comms, stakeholder register)',milestone:null}]
+},
+{
+  id:'11.7', name:'Monitor Risks', line1:'Monitor Risks', line2:'',
+  group:'Monitoring & Controlling', ka:'Risk', gridRow:0,
+  purpose:'Monitor the implementation of agreed-upon risk response plans, track identified risks, identify and analyze new risks, and evaluate risk process effectiveness.',
+  inputs:['Project management plan (risk mgmt plan)','Project documents (issue log, lessons learned register, risk register, risk report)','Work performance data','Work performance reports','OPAs'],
+  tools:['Data analysis (technical performance analysis, reserve analysis)','Audits','Meetings'],
+  outputs:[{name:'Work performance information',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates',milestone:null},{name:'Project documents updates (assumption log, issue log, lessons learned register, risk register, risk report)',milestone:null},{name:'OPA updates',milestone:null}]
+},
+{
+  id:'12.3', name:'Control Procurements', line1:'Control', line2:'Procurements',
+  group:'Monitoring & Controlling', ka:'Procurement', gridRow:0,
+  purpose:'Manage procurement relationships, monitor contract performance, make changes and corrections, and close out contracts.',
+  inputs:['Project management plan (requirements mgmt plan, risk mgmt plan, procurement mgmt plan, change mgmt plan, schedule baseline)','Project documents (assumption log, lessons learned register, milestone list, quality reports, requirements documentation, requirements traceability matrix, risk register, stakeholder register)','Agreements','Procurement documentation','Approved change requests','Work performance data','Work performance reports','EEFs','OPAs'],
+  tools:['Expert judgment','Claims administration','Data analysis (performance reviews, EVM, trend analysis)','Inspection','Audits'],
+  outputs:[{name:'Closed procurements',milestone:null},{name:'Work performance information',milestone:null},{name:'Procurement documentation updates',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates (risk mgmt plan, procurement mgmt plan, schedule baseline, cost baseline)',milestone:null},{name:'Project documents updates (lessons learned register, resource requirements, requirements traceability matrix, risk register, stakeholder register)',milestone:null},{name:'OPA updates',milestone:null}]
+},
+{
+  id:'13.4', name:'Monitor Stakeholder Engagement', line1:'Monitor Stakeholder', line2:'Engagement',
+  group:'Monitoring & Controlling', ka:'Stakeholder', gridRow:0,
+  purpose:'Monitor project stakeholder relationships and tailor strategies for engaging stakeholders.',
+  inputs:['Project management plan (resource mgmt plan, comms mgmt plan, stakeholder engagement plan)','Project documents (issue log, lessons learned register, project comms, risk register, stakeholder register)','Work performance data','EEFs','OPAs'],
+  tools:['Data analysis (alternatives analysis, root cause analysis, stakeholder analysis)','Decision making (multicriteria decision analysis, voting)','Data representation (stakeholder engagement assessment matrix)','Communication skills (feedback)','Interpersonal & team skills (active listening, cultural awareness, leadership, networking, political awareness)','Meetings'],
+  outputs:[{name:'Work performance information',milestone:null},{name:'Change requests',milestone:null},{name:'Project management plan updates (resource mgmt plan, comms mgmt plan, stakeholder engagement plan)',milestone:null},{name:'Project documents updates (issue log, lessons learned register, risk register, stakeholder register)',milestone:null}]
+},
+// ── CLOSING ─────────────────────────────────────────────────────
+{
+  id:'4.7', name:'Close Project or Phase', line1:'Close Project', line2:'or Phase',
+  group:'Closing', ka:'Integration', gridRow:0,
+  purpose:'Finalize all activities for the project, phase, or contract.',
+  inputs:['Project charter','Project management plan (all components)','Project documents (assumption log, basis of estimates, change log, issue log, lessons learned register, milestone list, project comms, quality control measurements, quality reports, requirements documentation, risk register, risk report)','Accepted deliverables (from 5.5 Validate Scope)','Business documents (business case, benefits management plan)','Agreements','Procurement documentation','OPAs'],
+  tools:['Expert judgment','Data analysis (document analysis, regression analysis, trend analysis, variance analysis)','Meetings'],
+  outputs:[{name:'Project documents updates (lessons learned register — final update)',milestone:null},{name:'Transition of product/service/result to operations',milestone:'M13'},{name:'Final report',milestone:null},{name:'OPA updates',milestone:null}]
+},
+];
+
+// ── Key data-flow edges (curated from full PMBOK ITTO tables) ──
 
 </script>
 </body>
