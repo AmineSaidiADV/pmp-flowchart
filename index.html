@@ -896,6 +896,226 @@ const PROCESSES = [
 ];
 
 // ── Key data-flow edges (curated from full PMBOK ITTO tables) ──
+const EDGES = [
+  // Initiating
+  { from:'4.1',  to:'13.1', label:'Project charter' },
+  // Initiating → Planning
+  { from:'4.1',  to:'4.2',  label:'Project charter' },
+  { from:'13.1', to:'4.2',  label:'Stakeholder register' },
+  { from:'13.1', to:'13.2', label:'Stakeholder register' },
+  // Planning internal – Scope chain
+  { from:'4.2',  to:'5.1',  label:'PMP' },
+  { from:'5.1',  to:'5.2',  label:'Scope mgmt plan' },
+  { from:'5.2',  to:'5.3',  label:'Requirements documentation' },
+  { from:'5.3',  to:'5.4',  label:'Project scope statement' },
+  // Planning internal – Schedule chain
+  { from:'4.2',  to:'6.1',  label:'PMP' },
+  { from:'5.4',  to:'6.2',  label:'Scope baseline' },
+  { from:'6.1',  to:'6.2',  label:'Schedule mgmt plan' },
+  { from:'6.2',  to:'6.3',  label:'Activity list' },
+  { from:'6.3',  to:'6.4',  label:'Network diagrams' },
+  { from:'6.4',  to:'6.5',  label:'Duration estimates' },
+  // Planning internal – Cost chain
+  { from:'4.2',  to:'7.1',  label:'PMP' },
+  { from:'7.1',  to:'7.2',  label:'Cost mgmt plan' },
+  { from:'6.5',  to:'7.2',  label:'Project schedule' },
+  { from:'7.2',  to:'7.3',  label:'Cost estimates' },
+  // Risk chain
+  { from:'4.2',  to:'11.1', label:'PMP' },
+  { from:'11.1', to:'11.2', label:'Risk mgmt plan' },
+  { from:'11.2', to:'11.3', label:'Risk register' },
+  { from:'11.3', to:'11.4', label:'Risk register (prioritized)' },
+  { from:'11.4', to:'11.5', label:'Risk report (quantified)' },
+  // Resource chain
+  { from:'4.2',  to:'9.1',  label:'PMP' },
+  { from:'9.1',  to:'9.2',  label:'Resource mgmt plan' },
+  // Comms & Stakeholders
+  { from:'4.2',  to:'10.1', label:'PMP' },
+  { from:'4.2',  to:'13.2', label:'PMP' },
+  // Planning → Executing
+  { from:'4.2',  to:'4.3',  label:'Project mgmt plan (approved)' },
+  // Executing flows
+  { from:'4.3',  to:'4.4',  label:'Deliverables' },
+  { from:'9.3',  to:'9.4',  label:'Team assignments' },
+  { from:'9.4',  to:'9.5',  label:'Team perf. assessments' },
+  // Executing → M&C
+  { from:'4.3',  to:'4.5',  label:'Work performance data' },
+  { from:'4.3',  to:'8.3',  label:'Deliverables' },
+  // M&C internal
+  { from:'4.5',  to:'4.6',  label:'Change requests' },
+  { from:'4.6',  to:'4.3',  label:'Approved change requests', feedback:true },
+  { from:'8.3',  to:'5.5',  label:'Verified deliverables' },
+  { from:'5.5',  to:'4.7',  label:'Accepted deliverables' },
+];
+
+// ═══════════════════════════════════════════════════════════════════
+//  LAYOUT & COLOR CONSTANTS
+// ═══════════════════════════════════════════════════════════════════
+const KA_COLOR = {
+  'Integration':     '#4A90D9',
+  'Scope':           '#7B68EE',
+  'Schedule':        '#20B2AA',
+  'Cost':            '#FF8C00',
+  'Quality':         '#DC143C',
+  'Resource':        '#228B22',
+  'Communications':  '#9932CC',
+  'Risk':            '#FF6347',
+  'Procurement':     '#8B4513',
+  'Stakeholder':     '#2E6B6B',
+};
+const PG_COLOR = {
+  'Initiating':              { bg:'rgba(255,243,205,0.12)', border:'rgba(255,215,0,0.3)',   label:'#f0b429' },
+  'Planning':                { bg:'rgba(212,237,218,0.10)', border:'rgba(63,185,80,0.3)',   label:'#3fb950' },
+  'Executing':               { bg:'rgba(204,229,255,0.10)', border:'rgba(88,166,255,0.3)',  label:'#58a6ff' },
+  'Monitoring & Controlling':{ bg:'rgba(248,215,218,0.10)', border:'rgba(248,81,73,0.3)',   label:'#f85149' },
+  'Closing':                 { bg:'rgba(226,217,243,0.12)', border:'rgba(188,140,255,0.3)', label:'#bc8cff' },
+};
+const KA_ORDER = ['Integration','Scope','Schedule','Cost','Quality','Resource','Communications','Risk','Procurement','Stakeholder'];
+const PG_ORDER = ['Initiating','Planning','Executing','Monitoring & Controlling','Closing'];
+
+// SVG layout
+const COL_W = 160, NODE_W = 140, NODE_H = 52, ROW_H = 80;
+const BAND_CFG = {
+  'Initiating':               { yTop:50  },
+  'Planning':                 { yTop:145 },
+  'Executing':                { yTop:625 },
+  'Monitoring & Controlling': { yTop:885 },
+  'Closing':                  { yTop:1075 },
+};
+const SVG_W = 1720, SVG_H = 1170;
+const COL_X = {};
+KA_ORDER.forEach((ka, i) => { COL_X[ka] = 80 + i * COL_W + COL_W / 2; });
+
+function getPos(p) {
+  const x = COL_X[p.ka];
+  const y = BAND_CFG[p.group].yTop + 35 + p.gridRow * ROW_H;
+  return { x, y };
+}
+
+// Build position map
+const POS = {};
+PROCESSES.forEach(p => { POS[p.id] = getPos(p); });
+
+// ═══════════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════════
+const state = {
+  view: 'flow',
+  activeGroups: new Set(PG_ORDER),
+  activeKAs:    new Set(KA_ORDER),
+  showEdges:    true,
+  showMilestones: true,
+  colorByPG:    false,
+  selectedId:   null,
+  searchQuery:  '',
+  zoom:         null,
+  sidebarWasCollapsed: false,
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════════════════
+function getProcess(id) { return PROCESSES.find(p => p.id === id); }
+function getMilestone(id) { return MILESTONES.find(m => m.id === id); }
+function nodeColor(p) {
+  if (state.colorByPG) return PG_COLOR[p.group]?.border?.replace('rgba(','').replace(')','').split(',').slice(0,3).join(',') || '#888';
+  return KA_COLOR[p.ka] || '#555';
+}
+function visible(p) {
+  return state.activeGroups.has(p.group) && state.activeKAs.has(p.ka);
+}
+function matchesSearch(p) {
+  const q = state.searchQuery.toLowerCase();
+  if (!q) return true;
+  return p.id.includes(q) || p.name.toLowerCase().includes(q) ||
+    p.inputs.some(i => i.toLowerCase().includes(q)) ||
+    p.tools.some(t => t.toLowerCase().includes(q)) ||
+    p.outputs.some(o => o.name.toLowerCase().includes(q));
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  MILESTONE STRIP
+// ═══════════════════════════════════════════════════════════════════
+function buildMilestoneStrip() {
+  const inner = document.getElementById('ms-inner');
+  MILESTONES.forEach((m, i) => {
+    if (i > 0) {
+      const sep = document.createElement('div');
+      sep.className = 'mstone-sep';
+      inner.appendChild(sep);
+    }
+    const el = document.createElement('div');
+    el.className = 'mstone';
+    el.dataset.id = m.id;
+    el.innerHTML = `<div class="mstone-dot"><span>${m.id.replace('M','')}</span></div>
+      <div class="mstone-label"><strong>${m.id}</strong>${m.name}</div>`;
+    el.addEventListener('click', () => highlightMilestone(m.id));
+    el.addEventListener('mouseenter', e => showTooltip(e, `<strong>${m.id}: ${m.name}</strong><br>${m.desc}<br><span class="tip-ka">Produced by: ${m.producedBy}</span>`));
+    el.addEventListener('mouseleave', hideTooltip);
+    inner.appendChild(el);
+  });
+  document.getElementById('strip-toggle').addEventListener('click', function() {
+    const strip = document.getElementById('milestone-strip');
+    if (strip.style.display === 'none') {
+      strip.style.display = '';
+      this.textContent = '▲ hide';
+    } else {
+      strip.style.display = 'none';
+      this.textContent = '▼ show';
+    }
+  });
+
+  // Sidebar toggle
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const isMobile = () => window.innerWidth <= 768;
+  document.getElementById('sidebar-toggle').addEventListener('click', () => {
+    if (isMobile()) {
+      const open = sidebar.classList.toggle('mobile-open');
+      overlay.classList.toggle('visible', open);
+    } else {
+      sidebar.classList.toggle('collapsed');
+    }
+  });
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('visible');
+  });
+  document.getElementById('sidebar-close').addEventListener('click', () => {
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('visible');
+  });
+}
+function highlightMilestone(mid) {
+  document.querySelectorAll('.mstone').forEach(el => el.classList.toggle('highlighted', el.dataset.id === mid));
+  const m = getMilestone(mid);
+  if (m) {
+    const p = getProcess(m.producedBy);
+    if (p) { highlightProcess(p.id); openPanel(p.id); }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  TOOLTIP
+// ═══════════════════════════════════════════════════════════════════
+const tt = document.getElementById('tooltip');
+function showTooltip(event, html) {
+  tt.innerHTML = html;
+  tt.style.opacity = '1';
+  positionTooltip(event);
+}
+function positionTooltip(e) {
+  const x = Math.min(e.clientX + 12, window.innerWidth - 240);
+  const y = Math.min(e.clientY + 12, window.innerHeight - 120);
+  tt.style.left = x + 'px';
+  tt.style.top  = y + 'px';
+}
+function hideTooltip() { tt.style.opacity = '0'; }
+document.addEventListener('mousemove', e => { if (tt.style.opacity === '1') positionTooltip(e); });
+
+// ═══════════════════════════════════════════════════════════════════
+//  VIEW 1 — MASTER FLOW CHART (D3)
+// ═══════════════════════════════════════════════════════════════════
 
 </script>
 </body>
