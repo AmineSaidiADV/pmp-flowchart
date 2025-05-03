@@ -1116,6 +1116,218 @@ document.addEventListener('mousemove', e => { if (tt.style.opacity === '1') posi
 // ═══════════════════════════════════════════════════════════════════
 //  VIEW 1 — MASTER FLOW CHART (D3)
 // ═══════════════════════════════════════════════════════════════════
+function renderFlowchart() {
+  if (typeof d3 === 'undefined') {
+    document.getElementById('no-d3').style.display = 'flex';
+    return;
+  }
+  const wrap = document.getElementById('flow-svg-wrap');
+  wrap.innerHTML = '';
+
+  const svg = d3.select(wrap).append('svg')
+    .attr('width', '100%').attr('height', '100%')
+    .attr('viewBox', `0 0 ${SVG_W} ${SVG_H}`)
+    .style('overflow', 'visible');
+
+  // Arrowhead marker
+  const defs = svg.append('defs');
+  defs.append('marker').attr('id','arr').attr('markerWidth',7).attr('markerHeight',5)
+    .attr('refX',6).attr('refY',2.5).attr('orient','auto')
+    .append('polygon').attr('points','0 0,7 2.5,0 5').attr('fill','#666');
+  defs.append('marker').attr('id','arr-gold').attr('markerWidth',7).attr('markerHeight',5)
+    .attr('refX',6).attr('refY',2.5).attr('orient','auto')
+    .append('polygon').attr('points','0 0,7 2.5,0 5').attr('fill','#f0b429');
+  defs.append('marker').attr('id','arr-hl').attr('markerWidth',7).attr('markerHeight',5)
+    .attr('refX',6).attr('refY',2.5).attr('orient','auto')
+    .append('polygon').attr('points','0 0,7 2.5,0 5').attr('fill','#fff');
+
+  const root = svg.append('g').attr('class','root');
+
+  // Zoom
+  const zoom = d3.zoom().scaleExtent([0.08, 4])
+    .on('zoom', e => root.attr('transform', e.transform));
+  svg.call(zoom);
+  state.zoom = zoom;
+  state.zoomSvg = svg;
+
+  const initTransform = d3.zoomIdentity.translate(20, 10).scale(0.52);
+  svg.call(zoom.transform, initTransform);
+
+  // ── Band backgrounds
+  PG_ORDER.forEach(pg => {
+    const cfg = BAND_CFG[pg];
+    const keys = Object.keys(BAND_CFG);
+    const idx = keys.indexOf(pg);
+    const nextKey = keys[idx + 1];
+    const bandH = nextKey ? BAND_CFG[nextKey].yTop - cfg.yTop : SVG_H - cfg.yTop;
+    root.append('rect').attr('x', 0).attr('y', cfg.yTop)
+      .attr('width', SVG_W).attr('height', bandH)
+      .attr('fill', PG_COLOR[pg].bg).attr('rx', 0);
+    // PG label
+    root.append('text').attr('x', 10).attr('y', cfg.yTop + 18)
+      .text(pg.toUpperCase()).attr('fill', PG_COLOR[pg].label)
+      .attr('font-size', 11).attr('font-weight', 700).attr('opacity', 0.9)
+      .attr('font-family', 'system-ui, sans-serif');
+    // Bottom border line
+    root.append('line').attr('x1',0).attr('y1',cfg.yTop).attr('x2',SVG_W).attr('y2',cfg.yTop)
+      .attr('stroke', PG_COLOR[pg].border).attr('stroke-width', 1).attr('opacity', 0.5);
+  });
+
+  // ── Column headers
+  const hdrG = root.append('g').attr('class','col-headers');
+  KA_ORDER.forEach((ka, i) => {
+    const cx = COL_X[ka];
+    hdrG.append('rect').attr('x', cx - NODE_W/2 - 2).attr('y', 4)
+      .attr('width', NODE_W + 4).attr('height', 42)
+      .attr('rx', 6).attr('fill', KA_COLOR[ka]).attr('opacity', 0.85);
+    hdrG.append('text').attr('x', cx).attr('y', 19)
+      .text(ka.replace('Communications','Comms').replace('Procurement','Procurement').replace('Monitoring & Controlling','M&C'))
+      .attr('text-anchor','middle').attr('fill','#fff').attr('font-size', 9.5)
+      .attr('font-weight', 700).attr('font-family','system-ui,sans-serif');
+    hdrG.append('text').attr('x', cx).attr('y', 34)
+      .text('Management').attr('text-anchor','middle').attr('fill','rgba(255,255,255,0.7)')
+      .attr('font-size', 8).attr('font-family','system-ui,sans-serif');
+  });
+
+  // ── Edges
+  const edgeG = root.append('g').attr('class','edge-layer').attr('display', state.showEdges ? null : 'none');
+  EDGES.forEach(e => {
+    const s = POS[e.from], t = POS[e.to];
+    if (!s || !t) return;
+    const x1 = s.x, y1 = s.y + NODE_H/2;
+    const x2 = t.x, y2 = t.y - NODE_H/2;
+    const isFeedback = e.feedback;
+    let path;
+    if (isFeedback) {
+      // Draw feedback loop to the left
+      const lx = Math.min(x1, x2) - 60;
+      path = `M${x1},${y1} C${x1},${y1+40} ${lx},${(y1+y2)/2} ${lx},${(y1+y2)/2} C${lx},${(y1+y2)/2} ${lx},${y2-40} ${x2},${y2}`;
+    } else if (Math.abs(x1 - x2) < 10) {
+      path = `M${x1},${y1} L${x2},${y2}`;
+    } else {
+      const midY = (y1 + y2) / 2;
+      path = `M${x1},${y1} C${x1},${midY} ${x2},${midY} ${x2},${y2}`;
+    }
+    const line = edgeG.append('path')
+      .attr('class', `svg-edge edge-${e.from}-${e.to}`)
+      .attr('d', path)
+      .attr('fill', 'none')
+      .attr('stroke', isFeedback ? '#f0b429' : '#555')
+      .attr('stroke-width', 1.4)
+      .attr('opacity', 0.6)
+      .attr('marker-end', isFeedback ? 'url(#arr-gold)' : 'url(#arr)')
+      .attr('stroke-dasharray', isFeedback ? '5,3' : null);
+    line.on('mouseenter', ev => {
+      showTooltip(ev, `<strong>${e.from} → ${e.to}</strong><br>${e.label}`);
+      line.attr('opacity', 1).attr('stroke', '#aaa').attr('stroke-width', 2);
+    }).on('mouseleave', () => { hideTooltip(); line.attr('opacity', 0.6).attr('stroke', isFeedback ? '#f0b429' : '#555').attr('stroke-width', 1.4); });
+  });
+
+  // ── Process nodes
+  const nodeG = root.append('g').attr('class','node-layer');
+  PROCESSES.forEach(p => {
+    const { x, y } = POS[p.id];
+    const color = state.colorByPG ? PG_COLOR[p.group].border : KA_COLOR[p.ka];
+    const g = nodeG.append('g')
+      .attr('class', `svg-node node-${p.id}`)
+      .attr('data-id', p.id)
+      .attr('transform', `translate(${x},${y})`)
+      .style('cursor', 'pointer')
+      .attr('opacity', visible(p) && matchesSearch(p) ? 1 : 0.15);
+
+    // Shadow
+    g.append('rect').attr('x', -NODE_W/2+2).attr('y', -NODE_H/2+2)
+      .attr('width', NODE_W).attr('height', NODE_H).attr('rx', 7)
+      .attr('fill', 'rgba(0,0,0,0.35)').attr('filter', null);
+
+    // Node rect
+    g.append('rect').attr('class','node-rect')
+      .attr('x', -NODE_W/2).attr('y', -NODE_H/2)
+      .attr('width', NODE_W).attr('height', NODE_H).attr('rx', 7)
+      .attr('fill', color).attr('stroke', 'rgba(255,255,255,0.25)').attr('stroke-width', 1);
+
+    // ID label
+    g.append('text').attr('y', -NODE_H/2 + 13)
+      .text(p.id).attr('text-anchor','middle')
+      .attr('fill','rgba(255,255,255,0.8)').attr('font-size', 9)
+      .attr('font-weight', 700).attr('font-family','system-ui,sans-serif');
+
+    // Name lines
+    const l1 = p.line1 || '', l2 = p.line2 || '';
+    g.append('text').attr('y', l2 ? -4 : 3)
+      .text(l1).attr('text-anchor','middle').attr('fill','#fff')
+      .attr('font-size', 10).attr('font-weight', 600).attr('font-family','system-ui,sans-serif');
+    if (l2) {
+      g.append('text').attr('y', 10)
+        .text(l2).attr('text-anchor','middle').attr('fill','rgba(255,255,255,0.85)')
+        .attr('font-size', 10).attr('font-family','system-ui,sans-serif');
+    }
+
+    // Milestone badge
+    if (state.showMilestones) {
+      const mOuts = p.outputs.filter(o => o.milestone);
+      mOuts.forEach((o, mi) => {
+        const bx = NODE_W/2 - 8 - mi*18, by = -NODE_H/2;
+        const bg = g.append('g').attr('class','milestone-badge')
+          .attr('transform', `translate(${bx},${by})`);
+        bg.append('polygon')
+          .attr('points', '0,-7 7,0 0,7 -7,0')
+          .attr('fill', '#FFD700').attr('stroke','rgba(0,0,0,0.3)').attr('stroke-width',1);
+        bg.append('text').attr('text-anchor','middle').attr('dominant-baseline','middle')
+          .text('★').attr('font-size', 6).attr('fill','#000');
+        bg.on('mouseenter', ev => showTooltip(ev, `<strong>${o.milestone}: ${getMilestone(o.milestone)?.name}</strong>`))
+           .on('mouseleave', hideTooltip);
+      });
+    }
+
+    // Interactions
+    g.on('mouseenter', ev => {
+      showTooltip(ev, `<strong>${p.id} ${p.name}</strong><span class="tip-ka">${p.ka} Management</span><br><span class="tip-pg" style="color:${PG_COLOR[p.group].label}">${p.group}</span>`);
+    }).on('mouseleave', hideTooltip)
+      .on('click', () => openPanel(p.id));
+  });
+
+  // Zoom button wiring
+  document.getElementById('btn-fit').onclick = () => {
+    svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity.translate(20,10).scale(0.52));
+  };
+  document.getElementById('btn-zoom-in').onclick = () => svg.transition().duration(200).call(zoom.scaleBy, 1.4);
+  document.getElementById('btn-zoom-out').onclick = () => svg.transition().duration(200).call(zoom.scaleBy, 0.7);
+}
+
+function applyFlowFilters() {
+  PROCESSES.forEach(p => {
+    const show = visible(p) && matchesSearch(p);
+    d3.selectAll(`[data-id="${p.id}"]`).attr('opacity', show ? 1 : 0.1);
+  });
+  d3.selectAll('.edge-layer').attr('display', state.showEdges ? null : 'none');
+}
+
+function highlightProcess(id) {
+  d3.selectAll('.svg-node').classed('highlighted', false).classed('dimmed', false);
+  if (id) {
+    d3.selectAll('.svg-node').classed('dimmed', true);
+    d3.select(`[data-id="${id}"]`).classed('highlighted', true).classed('dimmed', false);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  VIEW 2 — ITTO MATRIX
+// ═══════════════════════════════════════════════════════════════════
+const KEY_ARTIFACTS = [
+  'Project charter','Stakeholder register','Project management plan',
+  'Scope management plan','Requirements documentation','Requirements traceability matrix',
+  'Project scope statement','Scope baseline','Schedule management plan',
+  'Activity list','Project schedule','Schedule baseline',
+  'Cost estimates','Cost baseline','Quality management plan',
+  'Quality metrics','Resource management plan','Team charter',
+  'Communications management plan','Risk management plan','Risk register',
+  'Risk report','Procurement management plan','Agreements/Contracts',
+  'Stakeholder engagement plan','Lessons learned register','Change requests',
+  'Issue log','Assumption log','Deliverables',
+  'Work performance data','Work performance information','Work performance reports',
+];
+
 
 </script>
 </body>
