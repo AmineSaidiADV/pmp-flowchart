@@ -1328,6 +1328,56 @@ const KEY_ARTIFACTS = [
   'Work performance data','Work performance information','Work performance reports',
 ];
 
+function renderMatrix() {
+  const wrap = document.getElementById('matrix-wrap');
+  const filterMode = wrap.dataset.filter || 'all';
+
+  // Build lookup
+  const inputSet = {}, outputSet = {};
+  PROCESSES.forEach(p => {
+    p.inputs.forEach(inp => {
+      KEY_ARTIFACTS.forEach(a => {
+        if (inp.toLowerCase().includes(a.toLowerCase().split('/')[0].toLowerCase())) {
+          if (!inputSet[p.id]) inputSet[p.id] = new Set();
+          inputSet[p.id].add(a);
+        }
+      });
+    });
+    p.outputs.forEach(o => {
+      KEY_ARTIFACTS.forEach(a => {
+        if (o.name.toLowerCase().includes(a.toLowerCase().split('/')[0].toLowerCase())) {
+          if (!outputSet[p.id]) outputSet[p.id] = new Set();
+          outputSet[p.id].add(a);
+        }
+      });
+    });
+  });
+
+  let html = '<table id="matrix-table"><thead><tr><th>Process</th>';
+  KEY_ARTIFACTS.forEach(a => { html += `<th title="${a}">${a}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  PROCESSES.forEach(p => {
+    const isVis = visible(p) && matchesSearch(p);
+    html += `<tr style="opacity:${isVis?1:0.3}">`;
+    html += `<td onclick="openPanel('${p.id}')" style="cursor:pointer;color:${KA_COLOR[p.ka]}" title="${p.id} ${p.name}"><span style="font-weight:700;margin-right:4px">${p.id}</span>${p.name}</td>`;
+    KEY_ARTIFACTS.forEach(a => {
+      const isIn  = inputSet[p.id]?.has(a);
+      const isOut = outputSet[p.id]?.has(a);
+      if (isIn && isOut) html += `<td class="cell-io" title="${a} is both input and output of ${p.id}">↔</td>`;
+      else if (isIn)     html += `<td class="cell-i"  title="${a} is INPUT to ${p.id}">I</td>`;
+      else if (isOut)    html += `<td class="cell-o"  title="${a} is OUTPUT of ${p.id}">O</td>`;
+      else               html += '<td></td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  VIEW 3 — TIMELINE SWIMLANE
+// ═══════════════════════════════════════════════════════════════════
 
 </script>
 </body>
