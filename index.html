@@ -1378,6 +1378,42 @@ function renderMatrix() {
 // ═══════════════════════════════════════════════════════════════════
 //  VIEW 3 — TIMELINE SWIMLANE
 // ═══════════════════════════════════════════════════════════════════
+function renderTimeline() {
+  const grid = document.getElementById('timeline-grid');
+  grid.style.gridTemplateColumns = `120px repeat(5, 1fr)`;
+
+  let html = '<div class="tl-header" style="background:var(--bg2);position:sticky;top:0;left:0;z-index:6"></div>';
+  PG_ORDER.forEach(pg => {
+    const c = PG_COLOR[pg];
+    html += `<div class="tl-header" style="color:${c.label};border-color:${c.border}">${pg}</div>`;
+  });
+
+  KA_ORDER.forEach(ka => {
+    const color = KA_COLOR[ka];
+    html += `<div class="tl-ka-label" style="border-left:3px solid ${color}">${ka}<br><span style="font-size:9px;color:var(--text2);font-weight:400">Management</span></div>`;
+    PG_ORDER.forEach(pg => {
+      const procs = PROCESSES.filter(p => p.ka === ka && p.group === pg);
+      const milestones = procs.flatMap(p => p.outputs.filter(o => o.milestone).map(o => ({proc:p, ms:o.milestone})));
+      html += `<div class="tl-cell">`;
+      procs.forEach(p => {
+        const isVis = visible(p) && matchesSearch(p);
+        const col = state.colorByPG ? PG_COLOR[pg].border : color;
+        html += `<div class="tl-block" style="background:${col};opacity:${isVis?1:0.25}" onclick="openPanel('${p.id}')" title="${p.id} ${p.name}">
+          <div class="tid">${p.id}</div>${p.line1}${p.line2?' '+p.line2:''}</div>`;
+      });
+      milestones.forEach(({ms}) => {
+        const m = getMilestone(ms);
+        if (m) html += `<div class="tl-milestone">★ ${ms}: ${m.name.replace('Approved','').replace('Created','').replace('Signed','').replace('Produced','').replace('Established','').trim()}</div>`;
+      });
+      html += '</div>';
+    });
+  });
+  grid.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  VIEW 4 — KNOWLEDGE AREA DRILL-DOWN
+// ═══════════════════════════════════════════════════════════════════
 
 </script>
 </body>
