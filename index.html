@@ -1414,6 +1414,163 @@ function renderTimeline() {
 // ═══════════════════════════════════════════════════════════════════
 //  VIEW 4 — KNOWLEDGE AREA DRILL-DOWN
 // ═══════════════════════════════════════════════════════════════════
+function renderKA() {
+  const acc = document.getElementById('ka-accordion');
+  let html = '';
+  KA_ORDER.forEach(ka => {
+    const procs = PROCESSES.filter(p => p.ka === ka);
+    const color = KA_COLOR[ka];
+    html += `<div class="ka-section" data-ka="${ka}">
+      <div class="ka-header" onclick="toggleKA(this)">
+        <div class="ka-title">
+          <div class="ka-dot" style="background:${color}"></div>
+          <span>${ka} Management</span>
+          <span class="ka-count">(${procs.length} process${procs.length>1?'es':''})</span>
+        </div>
+        <span class="ka-chevron">›</span>
+      </div>
+      <div class="ka-body">
+        <div class="ka-processes">`;
+    procs.forEach(p => {
+      const pgc = PG_COLOR[p.group];
+      html += `<div class="ka-proc" data-id="${p.id}">
+        <div class="ka-proc-header" onclick="toggleKAProc(this)">
+          <span class="ka-proc-id" style="color:${color}">${p.id}</span>
+          <span class="ka-proc-name">${p.name}</span>
+          <span class="ka-proc-group" style="background:${pgc.bg};color:${pgc.label};border:1px solid ${pgc.border}">${p.group}</span>
+        </div>
+        <div class="ka-proc-body">
+          <p style="font-size:11px;color:var(--text2);margin-bottom:10px;line-height:1.5">${p.purpose}</p>
+          <div class="itto-section inputs">
+            <h5>Inputs</h5>
+            <ul class="itto-list">${p.inputs.map(i=>`<li class="itto-item" data-itto="${escAttr(i)}" data-type="input">${i}<span class="itto-hint">ⓘ</span></li>`).join('')}</ul>
+          </div>
+          <div class="itto-section tools">
+            <h5>Tools &amp; Techniques</h5>
+            <ul class="itto-list">${p.tools.map(t=>`<li class="itto-item" data-itto="${escAttr(t)}" data-type="tool">${t}<span class="itto-hint">ⓘ</span></li>`).join('')}</ul>
+          </div>
+          <div class="itto-section outputs">
+            <h5>Outputs</h5>
+            <ul class="itto-list">${p.outputs.map(o=>o.milestone
+              ? `<li class="milestone-out itto-item" data-itto="${escAttr(o.name)}" data-type="output">★ ${o.name} <span style="font-size:10px;background:rgba(240,180,41,0.2);border:1px solid var(--gold);padding:1px 4px;border-radius:3px">${o.milestone}</span><span class="itto-hint">ⓘ</span></li>`
+              : `<li class="itto-item" data-itto="${escAttr(o.name)}" data-type="output">${o.name}<span class="itto-hint">ⓘ</span></li>`).join('')}</ul>
+          </div>
+          <button onclick="openPanel('${p.id}')" style="margin-top:8px;padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:var(--bg3);font-size:11px;cursor:pointer;color:var(--text2)">Open in detail panel →</button>
+        </div>
+      </div>`;
+    });
+    html += `</div></div></div>`;
+  });
+  acc.innerHTML = html;
+}
+
+function toggleKA(header) {
+  const section = header.closest('.ka-section');
+  section.classList.toggle('open');
+}
+function toggleKAProc(header) {
+  const proc = header.closest('.ka-proc');
+  proc.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  DETAIL PANEL
+// ═══════════════════════════════════════════════════════════════════
+function openPanel(id) {
+  const p = getProcess(id);
+  if (!p) return;
+  state.selectedId = id;
+
+  document.getElementById('panel-id').textContent = p.id;
+  document.getElementById('panel-name').textContent = p.name;
+
+  const meta = document.getElementById('panel-meta');
+  const pgc = PG_COLOR[p.group];
+  meta.innerHTML = `
+    <span class="meta-badge" style="background:${KA_COLOR[p.ka]}20;color:${KA_COLOR[p.ka]};border:1px solid ${KA_COLOR[p.ka]}60">${p.ka}</span>
+    <span class="meta-badge" style="background:${pgc.bg};color:${pgc.label};border:1px solid ${pgc.border}">${p.group}</span>`;
+
+  const body = document.getElementById('panel-body');
+  let html = `<div id="panel-purpose">${p.purpose}</div>`;
+
+  html += `<div class="panel-section inputs">
+    <div class="panel-section-title">INPUTS (${p.inputs.length}) <span class="itto-tap-hint">tap any item to learn more</span></div>
+    <ul class="panel-list">${p.inputs.map(i => `<li class="itto-item" data-itto="${escAttr(i)}" data-type="input">${i}<span class="itto-hint">ⓘ</span></li>`).join('')}</ul>
+  </div>`;
+
+  html += `<div class="panel-section tools">
+    <div class="panel-section-title">TOOLS &amp; TECHNIQUES (${p.tools.length}) <span class="itto-tap-hint">tap any item to learn more</span></div>
+    <ul class="panel-list">${p.tools.map(t => `<li class="itto-item" data-itto="${escAttr(t)}" data-type="tool">${t}<span class="itto-hint">ⓘ</span></li>`).join('')}</ul>
+  </div>`;
+
+  const outItems = p.outputs.map(o => {
+    const nm = escAttr(o.name);
+    if (o.milestone) {
+      const m = getMilestone(o.milestone);
+      return `<li class="milestone itto-item" data-itto="${nm}" data-type="output">★ ${o.name} <span class="milestone-tag">${o.milestone}: ${m?.name}</span><span class="itto-hint">ⓘ</span></li>`;
+    }
+    return `<li class="itto-item" data-itto="${nm}" data-type="output">${o.name}<span class="itto-hint">ⓘ</span></li>`;
+  }).join('');
+  html += `<div class="panel-section outputs">
+    <div class="panel-section-title">OUTPUTS (${p.outputs.length}) <span class="itto-tap-hint">tap any item to learn more</span></div>
+    <ul class="panel-list">${outItems}</ul>
+  </div>`;
+
+  body.innerHTML = html;
+
+  const panel = document.getElementById('detail-panel');
+  panel.classList.remove('closed');
+  panel.scrollTop = 0;
+
+  // Highlight in flowchart
+  if (state.view === 'flow') highlightProcess(id);
+  if (state.view === 'flow' && state.zoom) scrollToNode(id);
+}
+
+function scrollToNode(id) {
+  const pos = POS[id];
+  if (!pos || typeof d3 === 'undefined') return;
+  const svg = state.zoomSvg;
+  const zoom = state.zoom;
+  if (!svg || !zoom) return;
+  const wrap = document.getElementById('flow-svg-wrap');
+  const cw = wrap.clientWidth, ch = wrap.clientHeight;
+  const scale = 1.1;
+  const tx = cw/2 - pos.x * scale;
+  const ty = ch/2 - pos.y * scale;
+  svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+}
+
+function closePanel() {
+  document.getElementById('detail-panel').classList.add('closed');
+  state.selectedId = null;
+  if (state.view === 'flow') highlightProcess(null);
+}
+
+document.getElementById('panel-close').addEventListener('click', closePanel);
+
+document.getElementById('btn-prev').addEventListener('click', () => {
+  const idx = PROCESSES.findIndex(p => p.id === state.selectedId);
+  if (idx > 0) openPanel(PROCESSES[idx - 1].id);
+});
+document.getElementById('btn-next').addEventListener('click', () => {
+  const idx = PROCESSES.findIndex(p => p.id === state.selectedId);
+  if (idx < PROCESSES.length - 1) openPanel(PROCESSES[idx + 1].id);
+});
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePanel();
+  if (document.getElementById('detail-panel').classList.contains('closed')) return;
+  if (e.key === 'ArrowRight') document.getElementById('btn-next').click();
+  if (e.key === 'ArrowLeft')  document.getElementById('btn-prev').click();
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  ITTO EXPLANATIONS
+// ═══════════════════════════════════════════════════════════════════
+function escAttr(s){return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
 
 </script>
 </body>
