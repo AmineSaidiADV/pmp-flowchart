@@ -1722,6 +1722,106 @@ function getIttoExplain(text) {
   return null;
 }
 
+function findToolByName(text) {
+  if (!text) return null;
+  const tl = text.toLowerCase().replace(/\s*\([^)]*\)\s*/g,'').trim();
+  let t = TOOLS.find(x => x.name.toLowerCase() === tl);
+  if (t) return t;
+  t = TOOLS.find(x => tl.startsWith(x.name.toLowerCase()) || x.name.toLowerCase().startsWith(tl));
+  if (t) return t;
+  t = TOOLS.find(x => tl.includes(x.name.toLowerCase()) || x.name.toLowerCase().includes(tl));
+  return t || null;
+}
+
+function openToolModal(tool) {
+  const c = TOOL_CAT_COLOR[tool.category] || '#8b949e';
+  const label = CAT_LABEL[tool.category] || tool.category;
+  document.getElementById('tmo-cat').innerHTML =
+    `<span style="color:${c};background:${c}22;border:1px solid ${c}44;padding:2px 8px;border-radius:10px">${label}</span>`;
+  document.getElementById('tmo-name').textContent = tool.name;
+  document.getElementById('tmo-tagline').textContent = tool.tagline;
+  const svg = typeof tool.visual === 'function' ? tool.visual() : (tool.visual || '');
+  document.getElementById('tmo-visual').innerHTML = svg;
+  document.getElementById('tmo-desc').innerHTML = `<strong>What it is:</strong> ${tool.desc}`;
+  document.getElementById('tmo-when').innerHTML = `<strong>When to use:</strong> ${tool.when}`;
+  document.getElementById('tmo-tip').innerHTML = `💡 <strong>Exam tip:</strong> ${tool.tip}`;
+  const usedIn = (tool.usedIn || []).map(id => {
+    const p = PROCESSES.find(x => x.id === id);
+    return `<span class="tool-modal-pid" title="${p ? p.name : id}">${id}${p ? ' — ' + p.name : ''}</span>`;
+  }).join('');
+  document.getElementById('tmo-usedin').innerHTML = usedIn
+    ? `<span style="font-size:11px;color:var(--text2);font-weight:600">Used in:</span>${usedIn}` : '';
+  document.getElementById('tool-modal-overlay').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeToolModal() {
+  document.getElementById('tool-modal-overlay').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+(function initToolModal() {
+  document.getElementById('tool-modal-close').addEventListener('click', closeToolModal);
+  document.getElementById('tool-modal-overlay').addEventListener('click', e => {
+    if (e.target.id === 'tool-modal-overlay') closeToolModal();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeToolModal(); });
+})();
+
+function ittoClick(el) {
+  const text = el.dataset.itto;
+  const type = el.dataset.type || 'input';
+  // Toggle: close if already open
+  const next = el.nextElementSibling;
+  if (next && next.classList.contains('itto-card')) { next.remove(); return; }
+  // Close any other open card in the same list
+  el.closest('ul')?.querySelectorAll('.itto-card').forEach(c => c.remove());
+  const info = getIttoExplain(text);
+  const matchedTool = type === 'tool' ? findToolByName(text) : null;
+  const card = document.createElement('div');
+  card.className = `itto-card type-${type}`;
+  let inner = '';
+  if (info) {
+    inner = `<div class="itto-card-inner"><span class="itto-card-icon">${info.icon}</span><div><div class="itto-card-what">${info.what}</div>${info.example?`<div class="itto-card-example"><em>Example:</em> ${info.example}</div>`:''} ${info.tip?`<div class="itto-card-tip">💡 ${info.tip}</div>`:''}</div></div>`;
+  } else {
+    inner = `<div class="itto-card-inner"><span class="itto-card-icon">📄</span><div class="itto-card-what" style="color:var(--text2)">No additional detail available for <em style="color:var(--text)">"${text}"</em>.</div></div>`;
+  }
+  if (matchedTool) {
+    inner += `<button class="itto-card-tool-btn" data-toolid="${matchedTool.id}">🃏 See full tool card →</button>`;
+  }
+  card.innerHTML = inner;
+  el.after(card);
+  card.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+
+// Event delegation for ITTO clicks + tool modal button
+document.addEventListener('click', e => {
+  // "See full tool card" button inside an itto-card
+  const btn = e.target.closest('.itto-card-tool-btn');
+  if (btn) {
+    e.stopPropagation();
+    const tool = TOOLS.find(t => t.id === btn.dataset.toolid);
+    if (tool) openToolModal(tool);
+    return;
+  }
+  // Normal ITTO item click
+  const li = e.target.closest('.itto-item');
+  if (li) { e.stopPropagation(); ittoClick(li); }
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  TOOLS DATA — ALL 52 PMBOK TOOLS WITH SVG VISUALS
+// ═══════════════════════════════════════════════════════════════════
+const CAT_LABEL = {
+  'data-gathering':'Data Gathering',
+  'data-analysis':'Data Analysis',
+  'data-representation':'Data Representation',
+  'scheduling':'Scheduling',
+  'estimating':'Estimating',
+  'interpersonal':'Interpersonal & Team',
+  'governance':'Governance & Other'
+};
+
 
 </script>
 </body>
