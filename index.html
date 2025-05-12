@@ -1822,6 +1822,1764 @@ const CAT_LABEL = {
   'governance':'Governance & Other'
 };
 
+const TOOLS = [
+
+// ─── DATA GATHERING ────────────────────────────────────────────────
+{id:'brainstorming',name:'Brainstorming',tagline:'Generate many ideas fast — judgment suspended',
+category:'data-gathering',
+usedIn:['4.1','5.2','5.3','6.2','8.1','11.2','13.1'],
+desc:'A facilitated group creativity technique where participants generate as many ideas as possible without evaluation. The diverge-then-converge approach maximises quantity first, then quality.',
+when:'Identifying risks, gathering requirements, identifying stakeholders, or any situation requiring creative thinking with a group.',
+tip:'Diverge first, converge later. No idea is criticised during generation — premature evaluation kills creativity.',
+visual:()=>`<svg viewBox="0 0 260 120" width="260" height="120" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<circle cx="130" cy="60" r="22" fill="#58a6ff22" stroke="#58a6ff" stroke-width="1.5"/>
+<text x="130" y="64" text-anchor="middle" font-size="9" fill="#58a6ff" font-weight="700">TOPIC</text>
+${[['Risk?',30,28,'#3fb950'],['Cost?',210,28,'#f0b429'],['Time?',18,72,'#bc8cff'],['Team?',220,72,'#f85149'],['Tools?',75,108,'#58a6ff'],['Scope?',175,108,'#3fb950'],['Vendor?',70,18,'#f0b429'],['Quality?',175,20,'#bc8cff']].map(([t,x,y,c])=>`
+<ellipse cx="${x}" cy="${y}" rx="28" ry="13" fill="${c}22" stroke="${c}" stroke-width="1"/>
+<text x="${x}" y="${y+4}" text-anchor="middle" font-size="9" fill="${c}" font-weight="600">${t}</text>
+<line x1="${x+(x<130?26:-26)}" y1="${y+(y<60?11:-11)}" x2="${130+(x<130?-20:20)}" y2="${60+(y<60?18:-18)}" stroke="${c}" stroke-width="0.8" opacity="0.5" stroke-dasharray="3,2"/>
+`).join('')}
+</svg>`},
+
+{id:'interviews',name:'Interviews',tagline:'1-on-1 elicitation for deep stakeholder insight',
+category:'data-gathering',
+usedIn:['5.2','5.3','11.2','13.1'],
+desc:'Formal or informal direct conversation between the PM/BA and a stakeholder to elicit information, expectations, and requirements. Can be structured (predetermined questions) or unstructured (open exploration).',
+when:'Eliciting requirements from executives, identifying stakeholders, gathering risk information, or whenever you need to probe deeply.',
+tip:'Always document the key points immediately after and send them back to the interviewee for confirmation.',
+visual:()=>`<svg viewBox="0 0 260 110" width="260" height="110" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="20" y="20" width="90" height="70" rx="8" fill="#161b22" stroke="#58a6ff" stroke-width="1.5"/>
+<circle cx="65" cy="44" r="12" fill="#58a6ff44" stroke="#58a6ff" stroke-width="1.5"/>
+<text x="65" y="48" text-anchor="middle" font-size="9" fill="#58a6ff">PM</text>
+<rect x="28" y="62" width="74" height="20" rx="4" fill="#58a6ff22"/>
+<text x="65" y="76" text-anchor="middle" font-size="9" fill="#8b949e">Structured Qs</text>
+<rect x="150" y="20" width="90" height="70" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+<circle cx="195" cy="44" r="12" fill="#3fb95044" stroke="#3fb950" stroke-width="1.5"/>
+<text x="195" y="48" text-anchor="middle" font-size="9" fill="#3fb950">Expert</text>
+<rect x="158" y="62" width="74" height="20" rx="4" fill="#3fb95022"/>
+<text x="195" y="76" text-anchor="middle" font-size="9" fill="#8b949e">Deep Answers</text>
+<path d="M110 55 Q130 45 150 55" fill="none" stroke="#f0b429" stroke-width="1.5" marker-end="url(#arr-gold)" stroke-dasharray="4,2"/>
+<text x="130" y="45" text-anchor="middle" font-size="8" fill="#f0b429">Q&amp;A</text>
+<defs><marker id="arr-gold" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto"><polygon points="0 0,6 2.5,0 5" fill="#f0b429"/></marker></defs>
+</svg>`},
+
+{id:'focus-groups',name:'Focus Groups',tagline:'Moderated discussion with prequalified participants',
+category:'data-gathering',
+usedIn:['5.2','13.1'],
+desc:'A trained moderator guides a group of prequalified stakeholders or subject matter experts in a structured discussion to elicit attitudes, expectations, and product/service requirements.',
+when:'Gathering qualitative user input on product features, understanding stakeholder concerns early in the project.',
+tip:'More nuanced than surveys but can be dominated by vocal participants — good facilitators draw out quieter voices.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<ellipse cx="130" cy="65" rx="55" ry="28" fill="#21262d" stroke="#f0b429" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="130" y="69" text-anchor="middle" font-size="9" fill="#f0b42988">TABLE</text>
+${[[65,32,'#3fb950','U1'],[130,22,'#58a6ff','U2'],[195,32,'#bc8cff','U3'],[215,68,'#f85149','U4'],[195,102,'#3fb950','U5'],[130,108,'#58a6ff','U6'],[65,102,'#bc8cff','U7'],[45,68,'#f0b429','MOD']].map(([cx,cy,c,l])=>`
+<circle cx="${cx}" cy="${cy}" r="11" fill="${c}33" stroke="${c}" stroke-width="1.5"/>
+<text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="8" fill="${c}" font-weight="700">${l}</text>
+`).join('')}
+</svg>`},
+
+{id:'questionnaires',name:'Questionnaires & Surveys',tagline:'Structured forms for large, dispersed audiences',
+category:'data-gathering',
+usedIn:['5.2','5.3','13.1'],
+desc:'Written sets of questions designed to quickly accumulate information from a large number of respondents. Especially useful when respondents are geographically dispersed or when statistical analysis is needed.',
+when:'Gathering requirements, stakeholder identification, or any process where broad input from many people is needed efficiently.',
+tip:'Response rates are often low — incentivise participation and keep surveys short (under 10 questions).',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="15" y="10" width="130" height="95" rx="6" fill="#161b22" stroke="#58a6ff" stroke-width="1.5"/>
+<text x="80" y="28" text-anchor="middle" font-size="10" fill="#58a6ff" font-weight="700">SURVEY</text>
+${[['Q1: Project importance?',35,45],['Q2: Risk tolerance?',35,60],['Q3: Reporting needs?',35,75]].map(([q,x,y])=>`
+<text x="${x}" y="${y}" font-size="8.5" fill="#c9d1d9">${q}</text>
+<rect x="${x+90}" y="${y-8}" width="36" height="10" rx="3" fill="#21262d" stroke="#30363d"/>
+`).join('')}
+<text x="80" y="95" text-anchor="middle" font-size="8" fill="#8b949e">n = 200 respondents</text>
+<g transform="translate(165,10)">
+${[[0,'85%','#3fb950'],[20,'60%','#58a6ff'],[40,'90%','#f0b429'],[60,'45%','#bc8cff']].map(([x,pct,c])=>`
+<rect x="${x}" y="${95-parseInt(pct)*.85}" width="16" height="${parseInt(pct)*.85}" rx="2" fill="${c}88"/>
+<text x="${x+8}" y="100" text-anchor="middle" font-size="7" fill="${c}">${pct}</text>
+`).join('')}
+<line x1="0" y1="95" x2="80" y2="95" stroke="#30363d"/>
+</g>
+</svg>`},
+
+{id:'benchmarking',name:'Benchmarking',tagline:'Compare to best-in-class to set improvement targets',
+category:'data-gathering',
+usedIn:['8.1'],
+desc:'Comparing actual or planned practices against those of comparable organisations to identify best practices and set performance improvement targets. Can be internal (other projects) or external (industry standards).',
+when:'Planning quality — to set realistic quality targets based on what comparable organisations achieve.',
+tip:'Correlation is not causation — understand why a benchmark organisation achieves its results before copying their practice.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="30" y1="10" x2="30" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<line x1="30" y1="95" x2="240" y2="95" stroke="#30363d" stroke-width="1.5"/>
+${[['Us',55,42,'#f85149'],['Avg',110,58,'#8b949e'],['Best',165,22,'#3fb950'],['Target',215,28,'#58a6ff']].map(([l,x,h,c])=>`
+<rect x="${x-16}" y="${h}" width="32" height="${95-h}" rx="3" fill="${c}55" stroke="${c}" stroke-width="1"/>
+<text x="${x}" y="${h-5}" text-anchor="middle" font-size="9" fill="${c}" font-weight="600">${l}</text>
+`).join('')}
+<line x1="20" y1="28" x2="245" y2="28" stroke="#58a6ff" stroke-width="1" stroke-dasharray="5,3" opacity="0.7"/>
+<text x="247" y="31" font-size="8" fill="#58a6ff">target</text>
+<text x="130" y="110" text-anchor="middle" font-size="9" fill="#8b949e">Metric: Defect Rate (lower=better)</text>
+</svg>`},
+
+{id:'checklists',name:'Checklists',tagline:'Pre-defined lists ensuring nothing is forgotten',
+category:'data-gathering',
+usedIn:['5.2','8.1','8.3','11.2'],
+desc:'Structured tools used to verify that a required set of steps has been performed, or to gather information systematically. Derived from historical information and expert knowledge.',
+when:'Quality control inspections, risk identification, requirements gathering, or any repeatable verification process.',
+tip:'The best checklists come from lessons learned — build them iteratively from past project experience.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="55" y="8" width="150" height="100" rx="7" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+<text x="130" y="26" text-anchor="middle" font-size="10" fill="#3fb950" font-weight="700">PRE-LAUNCH ✓</text>
+${[['Load test passed',true],['Security scan clean',true],['Rollback plan ready',true],['Stakeholders notified',true],['Sign-off obtained',false]].map(([item,done],i)=>`
+<rect x="70" y="${36+i*15}" width="11" height="11" rx="2" fill="${done?'#3fb95044':'#21262d'}" stroke="${done?'#3fb950':'#30363d'}" stroke-width="1.2"/>
+${done?`<text x="75.5" y="${44+i*15}" text-anchor="middle" font-size="10" fill="#3fb950" font-weight="700">✓</text>`:''}
+<text x="90" y="${45+i*15}" font-size="9" fill="${done?'#c9d1d9':'#8b949e'}">${item}</text>
+`).join('')}
+</svg>`},
+
+{id:'market-research',name:'Market Research',tagline:'Examine vendor & industry capabilities objectively',
+category:'data-gathering',
+usedIn:['12.1'],
+desc:'Examining industry and vendor capabilities to inform make-or-buy decisions, identify potential sellers, and establish realistic cost estimates. Includes reviewing product catalogues, attending conferences, and online research.',
+when:'Procurement planning — before deciding whether to build internally or buy, and to identify qualified sellers.',
+tip:'Conduct market research before writing RFP requirements — it prevents you from specifying something no vendor can deliver.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="18" text-anchor="middle" font-size="10" fill="#f0b429" font-weight="700">VENDOR COMPARISON</text>
+<rect x="10" y="25" width="240" height="16" rx="3" fill="#21262d"/>
+<text x="15" y="37" font-size="8.5" fill="#8b949e" font-weight="600">Vendor</text>
+<text x="85" y="37" font-size="8.5" fill="#8b949e" font-weight="600">Price</text>
+<text x="130" y="37" font-size="8.5" fill="#8b949e" font-weight="600">Support</text>
+<text x="185" y="37" font-size="8.5" fill="#8b949e" font-weight="600">Delivery</text>
+${[['Alpha Corp','$120K','24/7','8 wks','#3fb950'],['Beta Inc','$95K','Business hrs','12 wks','#f0b429'],['Gamma Ltd','$140K','24/7','6 wks','#58a6ff']].map(([v,p,s,d,c],i)=>`
+<rect x="10" y="${44+i*19}" width="240" height="18" rx="2" fill="${c}11" stroke="${c}33"/>
+<text x="15" y="${56+i*19}" font-size="9" fill="${c}" font-weight="600">${v}</text>
+<text x="85" y="${56+i*19}" font-size="9" fill="#c9d1d9">${p}</text>
+<text x="130" y="${56+i*19}" font-size="9" fill="#c9d1d9">${s}</text>
+<text x="185" y="${56+i*19}" font-size="9" fill="#c9d1d9">${d}</text>
+`).join('')}
+</svg>`},
+
+{id:'nominal-group',name:'Nominal Group Technique',tagline:'Structured prioritisation — equal voice for all',
+category:'data-gathering',
+usedIn:['5.2','11.2'],
+desc:'A structured technique where participants silently and individually generate ideas, then share and discuss them, and finally vote to prioritise. Prevents groupthink and ensures every participant has equal influence.',
+when:'Risk identification, requirements prioritisation, or any group decision where dominant personalities might skew results.',
+tip:'The "nominal" means the group is only nominal — people work individually first, which is what prevents groupthink.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="14" text-anchor="middle" font-size="9" fill="#8b949e">Step 1: Write → Step 2: Share → Step 3: Vote</text>
+${[['Idea A','●●●●●',5,'#3fb950'],['Idea B','●●●●',4,'#58a6ff'],['Idea C','●●●',3,'#f0b429'],['Idea D','●●',2,'#bc8cff'],['Idea E','●',1,'#f85149']].map(([idea,dots,score],i)=>`
+<rect x="20" y="${22+i*17}" width="220" height="14" rx="3" fill="#21262d"/>
+<text x="28" y="${33+i*17}" font-size="9" fill="#c9d1d9" font-weight="600">${idea}</text>
+<text x="110" y="${33+i*17}" font-size="9" fill="${['#3fb950','#58a6ff','#f0b429','#bc8cff','#f85149'][i]}">${dots}</text>
+<text x="235" y="${33+i*17}" text-anchor="end" font-size="9" fill="${['#3fb950','#58a6ff','#f0b429','#bc8cff','#f85149'][i]}" font-weight="700">${score} pts</text>
+`).join('')}
+<text x="130" y="112" text-anchor="middle" font-size="8" fill="#3fb950">▲ Top-ranked idea selected by group vote</text>
+</svg>`},
+
+{id:'delphi',name:'Delphi Technique',tagline:'Anonymous expert consensus through iterative rounds',
+category:'data-gathering',
+usedIn:['11.2'],
+desc:'An information-gathering technique where experts anonymously provide estimates or opinions across multiple rounds. After each round, aggregated results are shared and participants revise. Anonymity prevents peer influence.',
+when:'Risk identification and estimating when you need unbiased expert consensus — especially when experts might be influenced by seniority or personality.',
+tip:'Anonymity is essential — the moment experts can identify each other, anchoring and authority bias creep in.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+${[['Round 1',30,['2d','5d','8d','3d','9d'],'#58a6ff'],['Round 2',65,['4d','5d','6d','4d','7d'],'#f0b429'],['Round 3',100,['5d','5d','5d','5d','6d'],'#3fb950']].map(([label,y,vals,c])=>`
+<text x="8" y="${y+10}" font-size="8" fill="${c}" font-weight="700">${label}</text>
+${vals.map((v,i)=>`<rect x="${55+i*38}" y="${y}" width="30" height="16" rx="3" fill="${c}22" stroke="${c}" stroke-width="0.8"/><text x="${70+i*38}" y="${y+11}" text-anchor="middle" font-size="9" fill="${c}">${v}</text>`).join('')}
+`).join('')}
+<text x="130" y="112" text-anchor="middle" font-size="9" fill="#3fb950">↓ Convergence to consensus estimate</text>
+<line x1="240" y1="28" x2="240" y2="108" stroke="#30363d" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="250" y="68" font-size="8" fill="#8b949e" writing-mode="vertical-lr">CONVERGE</text>
+</svg>`},
+
+// ─── DATA ANALYSIS ──────────────────────────────────────────────────
+{id:'alternatives-analysis',name:'Alternatives Analysis',tagline:'Evaluate options against weighted criteria',
+category:'data-analysis',
+usedIn:['4.1','5.1','6.1','8.1','9.1','12.1'],
+desc:'Evaluating identified options and selecting the best approach to perform project work. A scoring matrix with weighted criteria makes the evaluation objective and defensible.',
+when:'Any decision point requiring a choice between approaches — make-or-buy, build method, resource type, contract type.',
+tip:'Define the criteria and weights before evaluating the options — otherwise you may unconsciously weight criteria to favour a predetermined choice.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="14" text-anchor="middle" font-size="10" fill="#58a6ff" font-weight="700">SCORING MATRIX</text>
+<rect x="10" y="18" width="240" height="14" rx="2" fill="#21262d"/>
+<text x="14" y="29" font-size="8" fill="#8b949e">Criterion (weight)</text>
+<text x="110" y="29" font-size="8" fill="#58a6ff">Option A</text>
+<text x="160" y="29" font-size="8" fill="#f0b429">Option B</text>
+<text x="210" y="29" font-size="8" fill="#3fb950">Option C</text>
+${[['Cost (40%)',3,4,2],['Speed (30%)',4,3,5],['Risk (20%)',4,2,3],['Quality (10%)',3,3,4]].map(([c,a,b,d],i)=>`
+<rect x="10" y="${34+i*16}" width="240" height="14" rx="1" fill="${i%2?'#161b22':'#1a1f26'}"/>
+<text x="14" y="${44+i*16}" font-size="8.5" fill="#c9d1d9">${c}</text>
+<text x="118" y="${44+i*16}" text-anchor="middle" font-size="9" fill="#58a6ff" font-weight="600">${a}</text>
+<text x="168" y="${44+i*16}" text-anchor="middle" font-size="9" fill="#f0b429" font-weight="600">${b}</text>
+<text x="218" y="${44+i*16}" text-anchor="middle" font-size="9" fill="#3fb950" font-weight="600">${d}</text>
+`).join('')}
+<rect x="10" y="98" width="240" height="14" rx="2" fill="#21262d" stroke="#58a6ff" stroke-width="1"/>
+<text x="14" y="108" font-size="8.5" fill="#8b949e" font-weight="700">Weighted Total</text>
+<text x="118" y="108" text-anchor="middle" font-size="9" fill="#58a6ff" font-weight="700">3.5 ★</text>
+<text x="168" y="108" text-anchor="middle" font-size="9" fill="#f0b429" font-weight="700">3.1</text>
+<text x="218" y="108" text-anchor="middle" font-size="9" fill="#3fb950" font-weight="700">3.3</text>
+</svg>`},
+
+{id:'cost-benefit',name:'Cost-Benefit Analysis',tagline:'Quantify benefits vs. costs to justify investment',
+category:'data-analysis',
+usedIn:['8.1'],
+desc:'Compares the financial and non-financial costs of undertaking an activity against its expected benefits. Used to justify quality investments and select between project alternatives.',
+when:'Plan Quality Management — justifying prevention costs. Also used in project selection to compare options.',
+tip:'Include intangible costs (team morale impact) and intangible benefits (brand reputation) alongside financial figures.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="130" y1="10" x2="130" y2="105" stroke="#30363d" stroke-width="1" stroke-dasharray="4,3"/>
+<rect x="20" y="22" width="95" height="75" rx="6" fill="#f8514922" stroke="#f85149" stroke-width="1.5"/>
+<text x="67" y="40" text-anchor="middle" font-size="10" fill="#f85149" font-weight="700">COSTS</text>
+<text x="28" y="56" font-size="8.5" fill="#c9d1d9">Prevention: $10K</text>
+<text x="28" y="70" font-size="8.5" fill="#c9d1d9">Appraisal: $5K</text>
+<text x="28" y="84" font-size="8.5" fill="#f85149" font-weight="600">Total: $15K</text>
+<rect x="145" y="22" width="95" height="75" rx="6" fill="#3fb95022" stroke="#3fb950" stroke-width="1.5"/>
+<text x="192" y="40" text-anchor="middle" font-size="10" fill="#3fb950" font-weight="700">BENEFITS</text>
+<text x="152" y="56" font-size="8.5" fill="#c9d1d9">Fewer defects: $80K</text>
+<text x="152" y="70" font-size="8.5" fill="#c9d1d9">Rework avoided: $70K</text>
+<text x="152" y="84" font-size="8.5" fill="#3fb950" font-weight="600">Total: $150K</text>
+<text x="130" y="112" text-anchor="middle" font-size="9" fill="#f0b429" font-weight="700">BCR = 10:1 ✓ Justified</text>
+</svg>`},
+
+{id:'earned-value',name:'Earned Value Analysis (EVA)',tagline:'Integrate scope, schedule & cost in one framework',
+category:'data-analysis',
+usedIn:['4.5','6.6','7.4'],
+desc:'A performance measurement technique that integrates scope, schedule, and cost into a single framework. Uses Planned Value (PV), Earned Value (EV), and Actual Cost (AC) to calculate variances and forecast completion.',
+when:'Monitor & Control Project Work, Control Schedule, Control Costs — whenever you need an objective view of project health.',
+tip:'CV = EV−AC (negative = over budget). SV = EV−PV (negative = behind schedule). CPI < 1 means you\'re spending more than you\'re earning.',
+visual:()=>`<svg viewBox="0 0 260 120" width="260" height="120" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="30" y1="10" x2="30" y2="100" stroke="#30363d" stroke-width="1.5"/>
+<line x1="30" y1="100" x2="250" y2="100" stroke="#30363d" stroke-width="1.5"/>
+<text x="130" y="112" text-anchor="middle" font-size="8" fill="#8b949e">Time →</text>
+<text x="14" y="55" font-size="8" fill="#8b949e" writing-mode="vertical-rl">Cost</text>
+<polyline points="30,100 80,82 130,60 180,35 250,15" fill="none" stroke="#58a6ff" stroke-width="2"/>
+<text x="252" y="15" font-size="8" fill="#58a6ff" font-weight="700">PV</text>
+<polyline points="30,100 80,88 130,72 180,55" fill="none" stroke="#3fb950" stroke-width="2"/>
+<text x="182" y="52" font-size="8" fill="#3fb950" font-weight="700">EV</text>
+<polyline points="30,100 80,85 130,78 180,65" fill="none" stroke="#f85149" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="182" y="63" font-size="8" fill="#f85149" font-weight="700">AC</text>
+<line x1="180" y1="55" x2="180" y2="65" stroke="#f0b429" stroke-width="1.5"/>
+<text x="183" y="62" font-size="7" fill="#f0b429">CV</text>
+<line x1="130" y1="60" x2="130" y2="72" stroke="#bc8cff" stroke-width="1.5"/>
+<text x="133" y="68" font-size="7" fill="#bc8cff">SV</text>
+<circle cx="180" cy="55" r="3" fill="#3fb950"/>
+<circle cx="180" cy="65" r="3" fill="#f85149"/>
+<text x="20" y="8" font-size="8" fill="#8b949e">$</text>
+<rect x="178" y="95" width="28" height="1" fill="#30363d"/>
+<text x="192" y="104" text-anchor="middle" font-size="7" fill="#8b949e">Status Date</text>
+</svg>`},
+
+{id:'swot',name:'SWOT Analysis',tagline:'Strengths, Weaknesses, Opportunities, Threats',
+category:'data-analysis',
+usedIn:['11.2'],
+desc:'A structured technique that examines the project from four perspectives: internal strengths and weaknesses, and external opportunities and threats. Bridges strategic analysis with risk identification.',
+when:'Risk identification, strategic planning, or evaluating whether the organisation is suited to take on a project.',
+tip:'Threats feed the risk register as negative risks. Opportunities feed it as positive risks — don\'t stop at identifying them, respond to them.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="130" y1="10" x2="130" y2="110" stroke="#30363d" stroke-width="1.5"/>
+<line x1="10" y1="60" x2="250" y2="60" stroke="#30363d" stroke-width="1.5"/>
+<text x="70" y="22" text-anchor="middle" font-size="10" fill="#3fb950" font-weight="700">STRENGTHS</text>
+<text x="70" y="34" text-anchor="middle" font-size="8" fill="#8b949e">Strong team</text>
+<text x="70" y="45" text-anchor="middle" font-size="8" fill="#8b949e">Proven tech</text>
+<text x="190" y="22" text-anchor="middle" font-size="10" fill="#f85149" font-weight="700">WEAKNESSES</text>
+<text x="190" y="34" text-anchor="middle" font-size="8" fill="#8b949e">Tight budget</text>
+<text x="190" y="45" text-anchor="middle" font-size="8" fill="#8b949e">No regulatory exp.</text>
+<text x="70" y="74" text-anchor="middle" font-size="10" fill="#58a6ff" font-weight="700">OPPORTUNITIES</text>
+<text x="70" y="86" text-anchor="middle" font-size="8" fill="#8b949e">Growing market</text>
+<text x="70" y="97" text-anchor="middle" font-size="8" fill="#8b949e">New partnership</text>
+<text x="190" y="74" text-anchor="middle" font-size="10" fill="#f0b429" font-weight="700">THREATS</text>
+<text x="190" y="86" text-anchor="middle" font-size="8" fill="#8b949e">Competitor launch</text>
+<text x="190" y="97" text-anchor="middle" font-size="8" fill="#8b949e">Regulatory change</text>
+<text x="12" y="58" font-size="7" fill="#8b949e">Internal</text>
+<text x="12" y="70" font-size="7" fill="#8b949e">External</text>
+</svg>`},
+
+{id:'root-cause',name:'Root Cause Analysis',tagline:'Find the cause, not just the symptom',
+category:'data-analysis',
+usedIn:['8.2','8.3','4.5'],
+desc:'A structured technique to identify the underlying fundamental cause of a defect or problem, not just treat its symptoms. The 5 Whys method iteratively asks "why?" until the root cause is found.',
+when:'Quality management (QA audits, QC), integrated change control, or any time a recurring problem needs a permanent fix.',
+tip:'A problem is rarely caused by a single root cause — use the fishbone diagram alongside 5 Whys to explore multiple causal branches.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="14" text-anchor="middle" font-size="10" fill="#f85149" font-weight="700">5 WHYS METHOD</text>
+${[['Tests failing?','Symptom','#f85149'],['Wrong API spec?','Why 1','#f0b429'],['Spec not reviewed?','Why 2','#f0b429'],['No review process?','Why 3','#58a6ff'],['✓ Root Cause','Why 4','#3fb950']].map(([text,why,c],i)=>`
+<rect x="20" y="${22+i*17}" width="170" height="14" rx="3" fill="${c}22" stroke="${c}" stroke-width="${i===4?2:1}"/>
+<text x="28" y="${32+i*17}" font-size="8.5" fill="${c}">${text}</text>
+<text x="197" y="${32+i*17}" font-size="8" fill="${c}88">${why}</text>
+${i<4?`<text x="105" y="${42+i*17}" text-anchor="middle" font-size="9" fill="${c}66">↓ Why?</text>`:''}
+`).join('')}
+</svg>`},
+
+{id:'variance-analysis',name:'Variance Analysis',tagline:'Compare planned vs. actual — find the cause',
+category:'data-analysis',
+usedIn:['4.5','6.6','7.4','8.3'],
+desc:'Comparing planned project performance against actual results to determine the degree of difference and identify its cause. Answers: How big is the variance? Why did it occur? Will it continue?',
+when:'Monitor & Control Project Work, Control Schedule, Control Costs — any time you need to understand why actuals differ from the plan.',
+tip:'A variance in isolation is less useful than the trend — a small but growing variance is more worrying than a large stable one.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="14" text-anchor="middle" font-size="10" fill="#58a6ff" font-weight="700">SCHEDULE VARIANCE</text>
+${[['Planned','$500K','#58a6ff'],['Actual','$420K','#3fb950'],['Variance','−$80K (−16%)','#f0b429']].map(([l,v,c],i)=>`
+<rect x="20" y="${22+i*22}" width="220" height="18" rx="4" fill="${c}18" stroke="${c}" stroke-width="1.2"/>
+<text x="30" y="${34+i*22}" font-size="9" fill="#8b949e">${l}</text>
+<text x="230" y="${34+i*22}" text-anchor="end" font-size="10" fill="${c}" font-weight="700">${v}</text>
+`).join('')}
+<rect x="20" y="92" width="220" height="18" rx="4" fill="#21262d" stroke="#30363d"/>
+<text x="30" y="104" font-size="8.5" fill="#8b949e">Cause: Testing underestimated by 40%</text>
+<text x="230" y="104" text-anchor="end" font-size="8.5" fill="#f85149">→ Action required</text>
+</svg>`},
+
+{id:'trend-analysis',name:'Trend Analysis',tagline:'Track performance trajectory to predict the future',
+category:'data-analysis',
+usedIn:['4.5','6.6','7.4'],
+desc:'Examining project results over time to determine whether performance is improving, degrading, or stable. A single period\'s metrics are less meaningful than the trend direction.',
+when:'Monitor & Control — any time you need to forecast whether current performance will lead to an acceptable final result.',
+tip:'A declining CPI (e.g. 1.05 → 0.98 → 0.91) is more alarming than a stable CPI of 0.88 — direction matters as much as magnitude.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="35" y1="10" x2="35" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<line x1="35" y1="95" x2="245" y2="95" stroke="#30363d" stroke-width="1.5"/>
+${['M1','M2','M3','M4','M5','M6'].map((m,i)=>`<text x="${60+i*36}" y="107" text-anchor="middle" font-size="8" fill="#8b949e">${m}</text>`).join('')}
+<text x="20" y="55" font-size="8" fill="#8b949e" writing-mode="vertical-rl">CPI</text>
+<polyline points="60,30 96,38 132,50 168,62 204,74" fill="none" stroke="#f85149" stroke-width="2"/>
+${[[60,30],[96,38],[132,50],[168,62],[204,74]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.5" fill="#f85149"/>`).join('')}
+<polyline points="204,74 230,84" fill="none" stroke="#f85149" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="232" y="87" font-size="8" fill="#f85149">Forecast</text>
+<line x1="35" y1="55" x2="245" y2="55" stroke="#3fb950" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
+<text x="247" y="57" font-size="7" fill="#3fb950">1.0</text>
+${[['1.05',60,30],['0.98',96,38],['0.91',132,50],['0.84',168,62],['0.77',204,74]].map(([v,x,y])=>`<text x="${x}" y="${y-7}" text-anchor="middle" font-size="7" fill="#f85149">${v}</text>`).join('')}
+<text x="130" y="14" text-anchor="middle" font-size="9" fill="#f85149">⚠ CPI declining — corrective action needed</text>
+</svg>`},
+
+{id:'sensitivity-analysis',name:'Sensitivity Analysis',tagline:'Identify which variable drives the most risk impact',
+category:'data-analysis',
+usedIn:['11.4'],
+desc:'Determines which individual project risks or other sources of uncertainty have the most potential impact on project objectives. Results are typically displayed as a Tornado Diagram — the widest bar drives the most variance.',
+when:'Perform Quantitative Risk Analysis — after identifying risks, to focus attention on the ones that matter most.',
+tip:'Sensitivity analysis answers "where should I focus?" — it doesn\'t tell you what to do about risks, but tells you which ones deserve most of your attention.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="12" text-anchor="middle" font-size="9" fill="#f0b429" font-weight="700">TORNADO DIAGRAM</text>
+<line x1="130" y1="18" x2="130" y2="108" stroke="#58a6ff" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="130" y="115" text-anchor="middle" font-size="7" fill="#8b949e">Base NPV: $200K</text>
+${[['Regulatory delay',45,85,'#f85149'],['Key resource loss',60,80,'#f0b429'],['Market demand',70,78,'#f0b429'],['Tech complexity',85,76,'#58a6ff'],['Vendor risk',97,74,'#8b949e']].map(([label,low,high,c],i)=>`
+<rect x="${130-(130-low)}" y="${22+i*16}" width="${130-low}" height="12" rx="2" fill="${c}55" stroke="${c}" stroke-width="0.8"/>
+<rect x="130" y="${22+i*16}" width="${high-130}" height="12" rx="2" fill="${c}88" stroke="${c}" stroke-width="0.8"/>
+<text x="125" y="${31+i*16}" text-anchor="end" font-size="7.5" fill="#c9d1d9">${label}</text>
+`).join('')}
+</svg>`},
+
+{id:'decision-tree',name:'Decision Tree Analysis',tagline:'EMV-based framework for probabilistic choices',
+category:'data-analysis',
+usedIn:['11.4'],
+desc:'A diagram that uses branches to represent alternative decisions and chance events, multiplying probability by monetary outcome (EMV) at each node. The path with the highest EMV is the optimal choice.',
+when:'Perform Quantitative Risk Analysis — selecting between risk responses or project options where outcomes are probabilistic.',
+tip:'EMV = Probability × Impact. Always subtract costs of the option itself before comparing. A positive EMV means it\'s worth pursuing.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="5" y="47" width="48" height="20" rx="4" fill="#58a6ff33" stroke="#58a6ff" stroke-width="1.5"/>
+<text x="29" y="60" text-anchor="middle" font-size="8" fill="#58a6ff" font-weight="700">Decision</text>
+<line x1="53" y1="52" x2="90" y2="35" stroke="#c9d1d9" stroke-width="1.2"/>
+<line x1="53" y1="62" x2="90" y2="80" stroke="#c9d1d9" stroke-width="1.2"/>
+<text x="68" y="38" font-size="7.5" fill="#3fb950">Build ($−80K)</text>
+<text x="68" y="83" font-size="7.5" fill="#f0b429">Buy ($−50K)</text>
+<circle cx="97" cy="32" r="7" fill="#3fb95033" stroke="#3fb950" stroke-width="1.5"/>
+<text x="97" y="36" text-anchor="middle" font-size="7" fill="#3fb950">🎲</text>
+<circle cx="97" cy="82" r="7" fill="#f0b42933" stroke="#f0b429" stroke-width="1.5"/>
+<text x="97" y="86" text-anchor="middle" font-size="7" fill="#f0b429">🎲</text>
+<line x1="104" y1="28" x2="145" y2="15" stroke="#3fb950" stroke-width="1"/>
+<text x="124" y="13" font-size="7" fill="#8b949e">70% → $200K</text>
+<line x1="104" y1="36" x2="145" y2="45" stroke="#3fb950" stroke-width="1"/>
+<text x="124" y="52" font-size="7" fill="#8b949e">30% → $20K</text>
+<line x1="104" y1="78" x2="145" y2="68" stroke="#f0b429" stroke-width="1"/>
+<text x="124" y="66" font-size="7" fill="#8b949e">70% → $200K</text>
+<line x1="104" y1="86" x2="145" y2="96" stroke="#f0b429" stroke-width="1"/>
+<text x="124" y="103" font-size="7" fill="#8b949e">30% → $20K</text>
+<rect x="155" y="18" width="100" height="16" rx="3" fill="#3fb95022" stroke="#3fb950"/>
+<text x="205" y="29" text-anchor="middle" font-size="8" fill="#3fb950">EMV=$56K → Net=$−24K</text>
+<rect x="155" y="70" width="100" height="16" rx="3" fill="#f0b42922" stroke="#f0b429"/>
+<text x="205" y="81" text-anchor="middle" font-size="8" fill="#f0b429">EMV=$146K → Net=$96K ✓</text>
+</svg>`},
+
+{id:'monte-carlo',name:'Monte Carlo Simulation',tagline:'Model thousands of scenarios to reveal outcome ranges',
+category:'data-analysis',
+usedIn:['6.6','7.4','11.4'],
+desc:'An iterative quantitative technique that runs thousands of scenarios by sampling from probability distributions of uncertain inputs, producing a probability distribution of possible outcomes for cost or schedule.',
+when:'Quantitative risk analysis — when you need to know the probability of finishing within budget or on schedule.',
+tip:'The 80th percentile date is a much safer commitment than the 50th — Monte Carlo reveals this distinction that deterministic scheduling cannot.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="30" y1="10" x2="30" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<line x1="30" y1="95" x2="240" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<text x="130" y="108" text-anchor="middle" font-size="8" fill="#8b949e">Project Duration (weeks)</text>
+<text x="18" y="55" font-size="8" fill="#8b949e" writing-mode="vertical-rl">Freq</text>
+${[[40,5,'#58a6ff'],[55,15,'#58a6ff'],[70,42,'#58a6ff'],[85,68,'#3fb950'],[100,80,'#3fb950'],[115,72,'#3fb950'],[130,50,'#f0b429'],[145,28,'#f0b429'],[160,12,'#f85149'],[175,5,'#f85149']].map(([x,h,c],i)=>`<rect x="${x-8}" y="${95-h}" width="14" height="${h}" fill="${c}88" stroke="${c}" stroke-width="0.5"/>`).join('')}
+<line x1="85" y1="10" x2="85" y2="95" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="87" y="22" font-size="8" fill="#3fb950">P50</text>
+<line x1="130" y1="10" x2="130" y2="95" stroke="#f0b429" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="132" y="22" font-size="8" fill="#f0b429">P80</text>
+<line x1="160" y1="10" x2="160" y2="95" stroke="#f85149" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="162" y="22" font-size="8" fill="#f85149">P90</text>
+</svg>`},
+
+{id:'reserve-analysis',name:'Reserve Analysis',tagline:'Calculate contingency + management reserve',
+category:'data-analysis',
+usedIn:['6.4','7.2','11.5'],
+desc:'Determines the amount of contingency reserve (for identified risks — "known unknowns") and management reserve (for unidentified risks — "unknown unknowns") to include in the project budget and schedule.',
+when:'Develop Schedule, Estimate Costs, Plan Risk Responses — whenever establishing budget or schedule baselines.',
+tip:'Contingency reserve is the PM\'s to use for identified risks. Management reserve requires sponsor approval — it\'s outside the PM\'s control.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="14" text-anchor="middle" font-size="10" fill="#58a6ff" font-weight="700">PROJECT BUDGET STACK</text>
+<rect x="55" y="22" width="150" height="26" rx="4" fill="#58a6ff33" stroke="#58a6ff" stroke-width="1.5"/>
+<text x="130" y="39" text-anchor="middle" font-size="9" fill="#58a6ff" font-weight="700">Activity Cost Estimates: $400K</text>
+<rect x="55" y="50" width="150" height="22" rx="4" fill="#3fb95033" stroke="#3fb950" stroke-width="1.5"/>
+<text x="130" y="64" text-anchor="middle" font-size="9" fill="#3fb950" font-weight="600">Contingency Reserve: $40K</text>
+<text x="215" y="64" font-size="8" fill="#8b949e">(PM owns)</text>
+<rect x="55" y="50" width="150" height="44" rx="4" fill="none" stroke="#3fb950" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+<text x="26" y="65" font-size="7.5" fill="#3fb950" text-anchor="end">Cost Baseline</text>
+<text x="26" y="73" font-size="7.5" fill="#3fb950" text-anchor="end">$440K</text>
+<rect x="55" y="76" width="150" height="20" rx="4" fill="#f0b42933" stroke="#f0b429" stroke-width="1.5"/>
+<text x="130" y="89" text-anchor="middle" font-size="9" fill="#f0b429" font-weight="600">Management Reserve: $22K</text>
+<text x="215" y="89" font-size="8" fill="#8b949e">(Sponsor owns)</text>
+<line x1="215" y1="22" x2="225" y2="22" stroke="#bc8cff" stroke-width="1"/>
+<line x1="215" y1="96" x2="225" y2="96" stroke="#bc8cff" stroke-width="1"/>
+<line x1="225" y1="22" x2="225" y2="96" stroke="#bc8cff" stroke-width="1.5"/>
+<text x="240" y="62" font-size="8" fill="#bc8cff" text-anchor="middle" writing-mode="vertical-rl">$462K Budget</text>
+</svg>`},
+
+{id:'make-or-buy',name:'Make-or-Buy Analysis',tagline:'Decide: build internally or purchase externally',
+category:'data-analysis',
+usedIn:['12.1'],
+desc:'A data analysis technique used to determine whether particular work is best accomplished by the project team or should be purchased from outside. Considers both direct costs and indirect factors.',
+when:'Plan Procurement Management — deciding which components of scope to produce internally versus procure.',
+tip:'Don\'t just compare costs — factor in core competency, IP protection, delivery risk, and long-term strategic implications.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="14" text-anchor="middle" font-size="10" fill="#58a6ff" font-weight="700">MAKE vs. BUY</text>
+<line x1="130" y1="18" x2="130" y2="108" stroke="#30363d" stroke-width="1.5"/>
+<rect x="10" y="22" width="110" height="82" rx="5" fill="#3fb95011"/>
+<rect x="140" y="22" width="110" height="82" rx="5" fill="#f0b42911"/>
+<text x="65" y="36" text-anchor="middle" font-size="10" fill="#3fb950" font-weight="700">MAKE ✓</text>
+<text x="195" y="36" text-anchor="middle" font-size="10" fill="#f0b429" font-weight="700">BUY</text>
+${[['Core competency','Lower long-term cost','IP protection','Control quality'],['Faster to market','No capital cost','Access expertise','Lower risk']].map((items,col)=>items.map((item,i)=>`<text x="${col===0?65:195}" y="${48+i*14}" text-anchor="middle" font-size="8" fill="${col===0?'#3fb950':'#f0b429'}88">• ${item}</text>`).join('')).join('')}
+</svg>`},
+
+{id:'stakeholder-analysis',name:'Stakeholder Analysis',tagline:'Map stakeholders by power, interest & attitude',
+category:'data-analysis',
+usedIn:['13.1','13.2'],
+desc:'Systematically gathering and analysing quantitative and qualitative information to determine whose interests should be considered throughout the project. Classifies stakeholders by their influence, impact, and attitude.',
+when:'Identify Stakeholders, Plan Stakeholder Engagement — at project initiation and whenever the stakeholder landscape changes.',
+tip:'The analysis document is confidential — it contains sensitive assessments of stakeholder behaviour that should never be shared openly.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="130" y1="10" x2="130" y2="105" stroke="#30363d" stroke-width="1.5"/>
+<line x1="10" y1="58" x2="250" y2="58" stroke="#30363d" stroke-width="1.5"/>
+<text x="130" y="110" text-anchor="middle" font-size="8" fill="#8b949e">Interest →</text>
+<text x="14" y="58" font-size="8" fill="#8b949e" writing-mode="vertical-rl">Power</text>
+<text x="65" y="24" text-anchor="middle" font-size="8" fill="#f0b429" font-weight="600">Keep Satisfied</text>
+<text x="195" y="24" text-anchor="middle" font-size="8" fill="#3fb950" font-weight="600">Manage Closely</text>
+<text x="65" y="90" text-anchor="middle" font-size="8" fill="#8b949e" font-weight="600">Monitor</text>
+<text x="195" y="90" text-anchor="middle" font-size="8" fill="#58a6ff" font-weight="600">Keep Informed</text>
+${[['CFO',55,28,'#f0b429'],['Sponsor',190,22,'#3fb950'],['PM',210,35,'#3fb950'],['User A',185,70,'#58a6ff'],['Vendor',65,85,'#8b949e'],['Regulator',115,18,'#f0b429']].map(([n,x,y,c])=>`
+<circle cx="${x}" cy="${y}" r="9" fill="${c}33" stroke="${c}" stroke-width="1.5"/>
+<text x="${x}" y="${y+4}" text-anchor="middle" font-size="7.5" fill="${c}" font-weight="600">${n}</text>
+`).join('')}
+</svg>`},
+
+{id:'document-analysis',name:'Document Analysis',tagline:'Extract requirements from existing documentation',
+category:'data-analysis',
+usedIn:['5.2','13.1'],
+desc:'Reviewing existing documentation to identify relevant requirements, constraints, risks, or stakeholder information. Sources include business plans, contracts, RFPs, processes, procedures, and previous project files.',
+when:'Collect Requirements, Identify Stakeholders — analysing contracts, existing systems, regulatory documents, or OPAs.',
+tip:'Documents often contain implied requirements — not everything is explicitly stated. Cross-reference multiple documents to surface hidden constraints.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+${[['Contract',20,20,'#58a6ff'],['RFP',100,20,'#f0b429'],['Prev. Project',180,20,'#3fb950'],['Regulations',60,55,'#bc8cff'],['Org Policy',150,55,'#f85149']].map(([l,x,y,c])=>`
+<rect x="${x}" y="${y}" width="60" height="28" rx="4" fill="${c}22" stroke="${c}" stroke-width="1.2"/>
+<text x="${x+30}" y="${y+13}" text-anchor="middle" font-size="8.5" fill="${c}" font-weight="600">${l}</text>
+<text x="${x+30}" y="${y+23}" text-anchor="middle" font-size="7" fill="${c}88">📄 review</text>
+<line x1="${x+30}" y1="${y+28}" x2="130" y2="88" stroke="${c}" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.5"/>
+`).join('')}
+<rect x="80" y="85" width="100" height="22" rx="6" fill="#21262d" stroke="#58a6ff" stroke-width="2"/>
+<text x="130" y="100" text-anchor="middle" font-size="9" fill="#58a6ff" font-weight="700">Requirements</text>
+</svg>`},
+
+{id:'regression-analysis',name:'Regression Analysis',tagline:'Statistical model linking cause to effect',
+category:'data-analysis',
+usedIn:['8.1','11.4'],
+desc:'A statistical method that examines the relationship between a dependent variable and one or more independent variables. In project management, used to predict cost or schedule outcomes based on historical project variables.',
+when:'Plan Quality, Perform Quantitative Risk Analysis — when you have historical data and need to predict future performance based on known drivers.',
+tip:'A high R² (e.g. 0.90) means 90% of the variance is explained by the model. Always validate the model before using it for important estimates.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="30" y1="10" x2="30" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<line x1="30" y1="95" x2="245" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<text x="135" y="108" text-anchor="middle" font-size="8" fill="#8b949e">Complexity Score →</text>
+<text x="18" y="55" font-size="8" fill="#8b949e" writing-mode="vertical-rl">Cost ($K)</text>
+${[[45,82],[55,76],[70,70],[80,65],[95,60],[110,53],[130,47],[145,42],[160,36],[175,30],[190,26],[210,20]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.5" fill="#58a6ff88" stroke="#58a6ff" stroke-width="0.8"/>`).join('')}
+<line x1="35" y1="87" x2="218" y2="18" stroke="#3fb950" stroke-width="2"/>
+<text x="220" y="17" font-size="8" fill="#3fb950">y=mx+b</text>
+<rect x="160" y="55" width="80" height="30" rx="4" fill="#21262d" stroke="#30363d"/>
+<text x="200" y="67" text-anchor="middle" font-size="8" fill="#8b949e">R² = 0.94</text>
+<text x="200" y="79" text-anchor="middle" font-size="8" fill="#3fb950">Strong fit ✓</text>
+</svg>`},
+
+{id:'risk-probability-impact',name:'Risk Probability & Impact Assessment',tagline:'Score each risk: likelihood × consequence',
+category:'data-analysis',
+usedIn:['11.3'],
+desc:'A qualitative technique for evaluating each identified risk on two dimensions: the probability that it will occur, and the impact on project objectives if it does. Scores are combined to produce a risk rating used for prioritisation.',
+when:'Perform Qualitative Risk Analysis — to assign a priority level to every risk in the register before deciding on responses.',
+tip:'Assess impact separately for each objective (scope, schedule, cost, quality). A risk may be low-impact on cost but high-impact on schedule — handle them differently.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="12" text-anchor="middle" font-size="9" fill="#58a6ff" font-weight="700">RISK ASSESSMENT WORKSHEET</text>
+<rect x="10" y="18" width="240" height="14" rx="3" fill="#21262d"/>
+<text x="14" y="29" font-size="8" fill="#8b949e" font-weight="600">Risk</text>
+<text x="95" y="29" font-size="8" fill="#8b949e" font-weight="600">Probability</text>
+<text x="165" y="29" font-size="8" fill="#8b949e" font-weight="600">Impact</text>
+<text x="225" y="29" font-size="8" fill="#8b949e" font-weight="600">Score</text>
+${[['Key dev leaves','High 0.7','High 0.8','0.56','#f85149'],['Vendor delay','Med 0.4','Med 0.5','0.20','#f0b429'],['Scope creep','High 0.6','Low 0.3','0.18','#f0b429'],['Tech failure','Low 0.2','High 0.9','0.18','#3fb950']].map(([r,p,i,s,c],n)=>`
+<rect x="10" y="${35+n*18}" width="240" height="16" rx="2" fill="${n%2?'#161b22':'#1a1f26'}"/>
+<text x="14" y="${46+n*18}" font-size="8.5" fill="#c9d1d9">${r}</text>
+<text x="100" y="${46+n*18}" text-anchor="middle" font-size="8.5" fill="${c}">${p}</text>
+<text x="175" y="${46+n*18}" text-anchor="middle" font-size="8.5" fill="${c}">${i}</text>
+<rect x="212" y="${36+n*18}" width="30" height="14" rx="3" fill="${c}33" stroke="${c}" stroke-width="1"/>
+<text x="227" y="${46+n*18}" text-anchor="middle" font-size="8.5" fill="${c}" font-weight="700">${s}</text>
+`).join('')}
+</svg>`},
+
+{id:'assumption-constraint-analysis',name:'Assumption & Constraint Analysis',tagline:'Surface hidden risks baked into the plan',
+category:'data-analysis',
+usedIn:['11.2'],
+desc:'Examines the validity of assumptions made during project planning and identifies potential risks from invalid assumptions. Also analyses constraints (budget, schedule, resources, technology) to determine associated risk.',
+when:'Identify Risks — specifically when reviewing the project management plan and project documents to find risks embedded in assumptions.',
+tip:'Every assumption is a potential risk. If an assumption turns out to be false, what happens? Document the assumption, the risk if wrong, and the trigger to re-evaluate.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="12" text-anchor="middle" font-size="9" fill="#58a6ff" font-weight="700">ASSUMPTION LOG</text>
+<rect x="10" y="18" width="240" height="13" rx="2" fill="#21262d"/>
+<text x="14" y="28" font-size="8" fill="#8b949e">Assumption</text>
+<text x="150" y="28" font-size="8" fill="#8b949e">If Wrong →</text>
+<text x="225" y="28" font-size="8" fill="#8b949e">Risk?</text>
+${[['Vendor delivers on time','3-wk delay = $30K','HIGH','#f85149'],['Requirements are stable','Change requests flood in','MED','#f0b429'],['Team has React expertise','Training needed (+2wk)','LOW','#3fb950'],['Budget approved next month','Project paused','HIGH','#f85149']].map(([a,w,r,c],i)=>`
+<rect x="10" y="${33+i*18}" width="240" height="16" rx="2" fill="${i%2?'#161b22':'#1a1f26'}"/>
+<text x="14" y="${44+i*18}" font-size="7.5" fill="#c9d1d9">${a}</text>
+<text x="148" y="${44+i*18}" font-size="7.5" fill="${c}88">${w}</text>
+<rect x="213" y="${34+i*18}" width="30" height="12" rx="3" fill="${c}33" stroke="${c}" stroke-width="1"/>
+<text x="228" y="${43+i*18}" text-anchor="middle" font-size="7.5" fill="${c}" font-weight="700">${r}</text>
+`).join('')}
+</svg>`},
+
+// ─── DATA REPRESENTATION ─────────────────────────────────────────────
+{id:'affinity-diagram',name:'Affinity Diagram',tagline:'Group large numbers of ideas into natural clusters',
+category:'data-representation',
+usedIn:['5.2','5.3'],
+desc:'A technique for organising a large number of ideas, opinions, or data by grouping them based on natural affinity or relationship. Typically uses sticky notes arranged on a wall into clusters.',
+when:'Collect Requirements, Define Scope — after brainstorming to organise many ideas into manageable categories.',
+tip:'After brainstorming 60 risks or requirements, an affinity diagram reveals patterns and gaps that a flat list conceals.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+${[['Technical',10,12,'#58a6ff',['API design','DB schema','Security','Load test']],['Process',100,12,'#3fb950',['Approvals','Sign-offs','Reviews']],['Business',175,12,'#f0b429',['ROI','Budget','Contracts','Stakeholders']]].map(([group,x,y,c,items])=>`
+<text x="${x+30}" y="${y+9}" font-size="9" fill="${c}" font-weight="700">${group}</text>
+${items.map((item,i)=>`
+<rect x="${x+(i%2)*38}" y="${y+14+Math.floor(i/2)*24}" width="34" height="18" rx="3" fill="${c}33" stroke="${c}" stroke-width="0.8" transform="rotate(${(Math.random()*4-2).toFixed(1)},${x+(i%2)*38+17},${y+14+Math.floor(i/2)*24+9})"/>
+<text x="${x+(i%2)*38+17}" y="${y+26+Math.floor(i/2)*24}" text-anchor="middle" font-size="7.5" fill="${c}">${item}</text>
+`).join('')}
+`).join('')}
+</svg>`},
+
+{id:'fishbone',name:'Cause-and-Effect (Fishbone) Diagram',tagline:'Structured root cause visualisation by category',
+category:'data-representation',
+usedIn:['8.2','8.3'],
+desc:'Also called an Ishikawa diagram. A visual tool that maps potential causes of a problem organised into categories (Method, Machine, Material, Man, Environment, Measurement). The problem is the "head" of the fish.',
+when:'Manage Quality, Control Quality — during QA audits and QC investigations to identify root causes of defects.',
+tip:'The 6 Ms (Man, Machine, Method, Material, Measurement, Mother Nature/Environment) are a standard starting framework for the branches.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="20" y1="58" x2="210" y2="58" stroke="#f85149" stroke-width="2"/>
+<polygon points="210,52 228,58 210,64" fill="#f85149"/>
+<rect x="230" y="44" width="26" height="28" rx="4" fill="#f8514933" stroke="#f85149" stroke-width="1.5"/>
+<text x="243" y="60" text-anchor="middle" font-size="7" fill="#f85149" font-weight="700">DEFECT</text>
+${[['Method',50,20,'#58a6ff',true],['Machine',130,20,'#f0b429',true],['Material',50,95,'#3fb950',false],['Man',130,95,'#bc8cff',false]].map(([label,x,y,c,above])=>`
+<line x1="${x}" y1="${y}" x2="${above?x-5:x-5}" y2="58" stroke="${c}" stroke-width="1.5"/>
+<text x="${x}" y="${above?y-5:y+12}" text-anchor="middle" font-size="9" fill="${c}" font-weight="700">${label}</text>
+<line x1="${x-25}" y1="${above?y+15:y-15}" x2="${x}" y2="${above?y+5:y-5}" stroke="${c}" stroke-width="0.8" opacity="0.7"/>
+<line x1="${x+5}" y1="${above?y+15:y-15}" x2="${x+10}" y2="${above?y+5:y-5}" stroke="${c}" stroke-width="0.8" opacity="0.7"/>
+`).join('')}
+</svg>`},
+
+{id:'control-chart',name:'Control Chart',tagline:'Detect non-random variation — 7-point rule',
+category:'data-representation',
+usedIn:['8.3'],
+desc:'A type of run chart with statistically calculated Upper and Lower Control Limits (UCL/LCL) that represents the expected variation of a stable process. Points outside control limits or patterns within them indicate non-random causes.',
+when:'Control Quality — monitoring any measurable process output over time to detect when the process is going out of control.',
+tip:'"Rule of Seven": 7 consecutive points on one side of the mean indicates a non-random shift — investigate even if no point is outside the control limits.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="30" y1="10" x2="30" y2="100" stroke="#30363d" stroke-width="1.5"/>
+<line x1="30" y1="100" x2="245" y2="100" stroke="#30363d" stroke-width="1.5"/>
+<line x1="30" y1="25" x2="245" y2="25" stroke="#f85149" stroke-width="1.5" stroke-dasharray="6,3"/>
+<text x="247" y="28" font-size="8" fill="#f85149">UCL</text>
+<line x1="30" y1="55" x2="245" y2="55" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="6,3"/>
+<text x="247" y="58" font-size="8" fill="#3fb950">Mean</text>
+<line x1="30" y1="85" x2="245" y2="85" stroke="#f85149" stroke-width="1.5" stroke-dasharray="6,3"/>
+<text x="247" y="88" font-size="8" fill="#f85149">LCL</text>
+<polyline points="50,60 75,50 100,65 125,48 150,70 175,58 200,30 215,40" fill="none" stroke="#58a6ff" stroke-width="1.8"/>
+${[[50,60],[75,50],[100,65],[125,48],[150,70],[175,58],[200,30],[215,40]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3" fill="${y<=25||y>=85?'#f85149':'#58a6ff'}"/>`).join('')}
+<circle cx="200" cy="30" r="5" fill="none" stroke="#f85149" stroke-width="2"/>
+<text x="200" y="20" text-anchor="middle" font-size="8" fill="#f85149">⚠ OOC</text>
+</svg>`},
+
+{id:'flowchart',name:'Flowchart / Process Map',tagline:'Visualise decision logic and process flow',
+category:'data-representation',
+usedIn:['8.1','8.2','11.2'],
+desc:'A visual representation of a process using standardised shapes to depict steps, decision points, and flow directions. Helps teams understand how a process works and where failure points exist.',
+when:'Plan Quality Management, Manage Quality — mapping processes to identify potential quality risks and process improvements.',
+tip:'Swimlane flowcharts (one lane per role) are especially powerful for identifying handoff failures between teams.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="95" y="5" width="70" height="20" rx="10" fill="#58a6ff33" stroke="#58a6ff" stroke-width="1.5"/>
+<text x="130" y="19" text-anchor="middle" font-size="8.5" fill="#58a6ff">START</text>
+<line x1="130" y1="25" x2="130" y2="35" stroke="#8b949e" stroke-width="1.2"/>
+<polygon points="115,35 145,35 130,50" fill="#f0b42933" stroke="#f0b429" stroke-width="1.5"/>
+<text x="130" y="46" text-anchor="middle" font-size="7.5" fill="#f0b429">Approved?</text>
+<line x1="145" y1="42" x2="185" y2="42" stroke="#f85149" stroke-width="1.2"/>
+<text x="162" y="38" font-size="7" fill="#f85149">No</text>
+<rect x="185" y="32" width="55" height="20" rx="3" fill="#f8514922" stroke="#f85149" stroke-width="1"/>
+<text x="212" y="45" text-anchor="middle" font-size="7.5" fill="#f85149">Revise CR</text>
+<text x="144" y="56" font-size="7" fill="#3fb950">Yes</text>
+<line x1="130" y1="50" x2="130" y2="62" stroke="#3fb950" stroke-width="1.2"/>
+<rect x="92" y="62" width="76" height="20" rx="3" fill="#3fb95022" stroke="#3fb950" stroke-width="1.5"/>
+<text x="130" y="75" text-anchor="middle" font-size="8" fill="#3fb950">Implement</text>
+<line x1="130" y1="82" x2="130" y2="92" stroke="#8b949e" stroke-width="1.2"/>
+<rect x="95" y="92" width="70" height="20" rx="10" fill="#bc8cff33" stroke="#bc8cff" stroke-width="1.5"/>
+<text x="130" y="106" text-anchor="middle" font-size="8.5" fill="#bc8cff">END</text>
+</svg>`},
+
+{id:'histogram',name:'Histogram',tagline:'Frequency distribution of a measured variable',
+category:'data-representation',
+usedIn:['8.3'],
+desc:'A bar chart showing the frequency distribution of a continuous variable. Unlike a regular bar chart, histogram bars are adjacent (no gaps) to emphasise continuity. Reveals the shape, spread, and central tendency of a distribution.',
+when:'Control Quality — understanding defect distributions, cycle times, or any measured process variable.',
+tip:'Shape tells a story: normal (bell) = stable process; skewed = systematic bias; bimodal = two different processes mixed together.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="30" y1="10" x2="30" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<line x1="30" y1="95" x2="240" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<text x="130" y="108" text-anchor="middle" font-size="8" fill="#8b949e">Defects per Module</text>
+<text x="18" y="55" font-size="8" fill="#8b949e" writing-mode="vertical-rl">Frequency</text>
+${[[30,3,'#58a6ff'],[52,8,'#58a6ff'],[74,22,'#58a6ff'],[96,42,'#3fb950'],[118,55,'#3fb950'],[140,38,'#3fb950'],[162,20,'#f0b429'],[184,10,'#f0b429'],[206,4,'#f85149']].map(([x,h,c])=>`<rect x="${x}" y="${95-h*1.5}" width="20" height="${h*1.5}" fill="${c}77" stroke="${c}" stroke-width="1"/>`).join('')}
+<polyline points="40,90 62,78 84,62 106,31 128,11 150,26 172,56 194,80 214,89" fill="none" stroke="#f0b429" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.7"/>
+</svg>`},
+
+{id:'probability-impact',name:'Probability & Impact Matrix',tagline:'Risk heat map — classify by probability × impact',
+category:'data-representation',
+usedIn:['11.3'],
+desc:'A grid that maps each identified risk against its probability of occurrence and its potential impact on project objectives. Colour-coded zones (green/yellow/red) guide prioritisation of risk responses.',
+when:'Perform Qualitative Risk Analysis — to prioritise individual risks for further analysis or response planning.',
+tip:'Define the probability and impact scales before the matrix — agreement on what "High" means prevents endless debate when assessing risks.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="12" text-anchor="middle" font-size="9" fill="#8b949e">Impact →</text>
+<text x="10" y="68" font-size="9" fill="#8b949e" writing-mode="vertical-rl">Probability</text>
+${[0,1,2,3,4].map(row=>[0,1,2,3,4].map(col=>{
+  const score=(row+1)*(col+1);
+  const c=score<=4?'#3fb950':score<=9?'#f0b429':'#f85149';
+  return `<rect x="${30+col*44}" y="${18+row*18}" width="42" height="16" fill="${c}${score<=4?'44':score<=9?'55':'66'}" stroke="${c}" stroke-width="0.5"/><text x="${51+col*44}" y="${29+row*18}" text-anchor="middle" font-size="8" fill="${c}" font-weight="600">${score<=4?'L':score<=9?'M':'H'}</text>`;
+}).join('')).join('')}
+${['VL','L','M','H','VH'].map((l,i)=>`<text x="${51+i*44}" y="108" text-anchor="middle" font-size="8" fill="#8b949e">${l}</text><text x="22" y="${26+i*18}" text-anchor="middle" font-size="8" fill="#8b949e">${['VH','H','M','L','VL'][i]}</text>`).join('')}
+${[['R1',96,18+0*18+8,'#f85149'],['R2',30+2*44+21,18+2*18+8,'#f0b429'],['R3',30+0*44+21,18+4*18+8,'#3fb950']].map(([l,x,y,c])=>`<circle cx="${x}" cy="${y}" r="6" fill="${c}" opacity="0.9"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="7" fill="#fff" font-weight="700">${l}</text>`).join('')}
+</svg>`},
+
+{id:'scatter-diagram',name:'Scatter Diagram',tagline:'Reveal correlation between two variables',
+category:'data-representation',
+usedIn:['8.3'],
+desc:'A chart that plots the relationship between two variables to determine if they are correlated. The pattern of data points — linear, curved, or random — indicates the type and strength of the relationship.',
+when:'Control Quality — investigating whether a suspected cause actually correlates with a defect or quality outcome.',
+tip:'Correlation ≠ causation. A strong positive correlation is evidence worth investigating, but always seek domain expertise to confirm causation.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="30" y1="10" x2="30" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<line x1="30" y1="95" x2="245" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<text x="130" y="108" text-anchor="middle" font-size="8" fill="#8b949e">Code Complexity →</text>
+<text x="18" y="55" font-size="8" fill="#8b949e" writing-mode="vertical-rl">Bug Count</text>
+${[[45,82],[60,75],[70,68],[80,65],[100,58],[115,50],[130,44],[145,38],[160,35],[180,28],[200,22],[215,18]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.5" fill="#58a6ff88" stroke="#58a6ff" stroke-width="0.8"/>`).join('')}
+<line x1="40" y1="86" x2="220" y2="16" stroke="#f0b429" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="222" y="16" font-size="8" fill="#f0b429">r≈0.97</text>
+<text x="130" y="14" text-anchor="middle" font-size="9" fill="#3fb950">Strong positive correlation ↗</text>
+</svg>`},
+
+{id:'mind-map',name:'Mind Map',tagline:'Radial idea network from a central concept',
+category:'data-representation',
+usedIn:['5.2','5.3','11.2'],
+desc:'A visual thinking tool that starts with a central topic and radiates outward through branches representing related ideas, sub-topics, and connections. Encourages non-linear, creative thinking.',
+when:'Collect Requirements, Define Scope, Identify Risks — any situation where you want to explore a topic holistically rather than linearly.',
+tip:'Mind maps are especially effective for scope definition — they surface related areas that a simple list would miss.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<circle cx="130" cy="58" r="20" fill="#58a6ff33" stroke="#58a6ff" stroke-width="2"/>
+<text x="130" y="55" text-anchor="middle" font-size="8" fill="#58a6ff" font-weight="700">PROJECT</text>
+<text x="130" y="65" text-anchor="middle" font-size="8" fill="#58a6ff">SCOPE</text>
+${[['Features',40,18,'#3fb950',['Login','Dashboard','Reports']],['Tech',210,18,'#f0b429',['React','API','DB']],['Team',30,85,'#bc8cff',['Dev','QA','PM']],['Timeline',210,85,'#f85149',['Q1','Q2','Q3']]].map(([topic,tx,ty,c,sub])=>`
+<line x1="${tx>130?tx-25:tx+25}" y1="${ty>58?ty-10:ty+10}" x2="${130+(tx<130?-18:18)}" y2="${58+(ty<58?-14:14)}" stroke="${c}" stroke-width="1.5"/>
+<ellipse cx="${tx}" cy="${ty}" rx="28" ry="12" fill="${c}22" stroke="${c}" stroke-width="1.2"/>
+<text x="${tx}" y="${ty+4}" text-anchor="middle" font-size="8.5" fill="${c}" font-weight="600">${topic}</text>
+${sub.map((s,i)=>`
+<line x1="${tx+(tx<130?-28:28)}" y1="${ty}" x2="${tx+(tx<130?-52:52)}" y2="${ty-10+i*10}" stroke="${c}" stroke-width="0.8" opacity="0.7"/>
+<text x="${tx+(tx<130?-55:55)}" y="${ty-7+i*10}" ${tx<130?'text-anchor="end"':''} font-size="7.5" fill="${c}88">${s}</text>
+`).join('')}
+`).join('')}
+</svg>`},
+
+{id:'raci',name:'RACI Matrix',tagline:'Responsibility Assignment — R/A/C/I per task',
+category:'data-representation',
+usedIn:['9.1'],
+desc:'A Responsibility Assignment Matrix that defines roles for each task as Responsible (does the work), Accountable (owns the outcome), Consulted (input sought), or Informed (notified of decisions). Maps tasks against roles.',
+when:'Plan Resource Management — establishing clear ownership and communication expectations for every work package.',
+tip:'Every task must have exactly ONE Accountable person. If two people are both accountable, effectively nobody is.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="10" y="8" width="240" height="16" rx="3" fill="#21262d"/>
+<text x="80" y="20" font-size="8" fill="#8b949e">Task</text>
+<text x="130" y="20" text-anchor="middle" font-size="8" fill="#58a6ff">PM</text>
+<text x="165" y="20" text-anchor="middle" font-size="8" fill="#3fb950">Dev Lead</text>
+<text x="200" y="20" text-anchor="middle" font-size="8" fill="#f0b429">QA</text>
+<text x="235" y="20" text-anchor="middle" font-size="8" fill="#bc8cff">Sponsor</text>
+${[['Design DB',['C','R','I','A']],['Code API',['A','R','C','I']],['Test module',['A','I','R','I']],['Deploy',['R','C','C','A']]].map(([task,roles],i)=>{
+  const cols=[130,165,200,235];
+  const colours={'R':'#3fb950','A':'#f0b429','C':'#58a6ff','I':'#8b949e'};
+  return `<rect x="10" y="${26+i*19}" width="240" height="17" rx="2" fill="${i%2?'#161b22':'#1a1f26'}"/>
+<text x="14" y="${38+i*19}" font-size="8.5" fill="#c9d1d9">${task}</text>
+${roles.map((r,j)=>`<rect x="${cols[j]-10}" y="${28+i*19}" width="20" height="13" rx="3" fill="${colours[r]}33" stroke="${colours[r]}" stroke-width="0.8"/><text x="${cols[j]}" y="${38+i*19}" text-anchor="middle" font-size="8" fill="${colours[r]}" font-weight="700">${r}</text>`).join('')}`;
+}).join('')}
+<text x="10" y="108" font-size="8" fill="#3fb950">R=Responsible</text>
+<text x="80" y="108" font-size="8" fill="#f0b429">A=Accountable</text>
+<text x="155" y="108" font-size="8" fill="#58a6ff">C=Consulted</text>
+<text x="215" y="108" font-size="8" fill="#8b949e">I=Informed</text>
+</svg>`},
+
+{id:'stakeholder-engagement-matrix',name:'Stakeholder Engagement Assessment Matrix',tagline:'Map current vs. desired engagement level',
+category:'data-representation',
+usedIn:['13.2'],
+desc:'Maps each stakeholder\'s current engagement level against their desired engagement level, using five categories: Unaware, Resistant, Neutral, Supportive, Leading. Gaps identify where engagement strategy is needed.',
+when:'Plan Stakeholder Engagement — to identify which stakeholders need to be moved from their current to desired engagement state.',
+tip:'"C" marks current state, "D" marks desired — when C and D align, no action is needed. When they differ, a tailored engagement strategy is required.',
+visual:()=>{
+  const rows=[['Sponsor',[false,false,false,'C→D',false]],['CFO',[false,false,'C',false,'D']],['End Users',[false,'C',false,'D',false]],['Vendor',[false,false,'CD',false,false]]];
+  function cellHtml(v,j,i){
+    if(!v) return '';
+    const isArrow=v.includes('→'), isCD=(v==='CD');
+    const fill=isArrow?'#58a6ff22':isCD?'#3fb95022':'#f0b42922';
+    const stroke=isArrow?'#58a6ff':isCD?'#3fb950':'#f0b429';
+    const cx=67+j*38, cy=36+i*19;
+    return '<rect x="'+(50+j*38)+'" y="'+(26+i*19)+'" width="34" height="13" rx="3" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1"/>'
+      +'<text x="'+cx+'" y="'+cy+'" text-anchor="middle" font-size="8" fill="'+stroke+'" font-weight="700">'+v+'</text>';
+  }
+  return `<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="10" y="8" width="240" height="14" rx="3" fill="#21262d"/>
+<text x="14" y="19" font-size="8" fill="#8b949e" font-weight="600">Stakeholder</text>
+${['Unaware','Resistant','Neutral','Supportive','Leading'].map((l,i)=>`<text x="${68+i*38}" y="19" text-anchor="middle" font-size="7.5" fill="#8b949e" font-weight="600">${l}</text>`).join('')}
+${rows.map(([name,cells],i)=>`<rect x="10" y="${24+i*19}" width="240" height="17" rx="2" fill="${i%2?'#161b22':'#1a1f26'}"/>
+<text x="14" y="${36+i*19}" font-size="8.5" fill="#c9d1d9">${name}</text>
+${cells.map((v,j)=>cellHtml(v,j,i)).join('')}`).join('\n')}
+</svg>`;
+}},
+
+{id:'tornado-chart',name:'Tornado Chart',tagline:'Ranked sensitivity bars — widest = most impactful',
+category:'data-representation',
+usedIn:['11.4'],
+desc:'A special type of bar chart used in sensitivity analysis where variables are sorted by their impact on the outcome — widest bars (highest impact) at the top, forming a tornado shape. Shows which uncertain variables drive the most variance.',
+when:'Perform Quantitative Risk Analysis — to visually communicate which risks or variables have the greatest potential impact on project objectives.',
+tip:'The wider the bar, the more that variable can swing the outcome. Focus risk response planning on the top 2-3 variables — the rest have marginal impact.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="12" text-anchor="middle" font-size="9" fill="#f0b429" font-weight="700">SENSITIVITY: IMPACT ON NPV</text>
+<line x1="130" y1="16" x2="130" y2="105" stroke="#58a6ff" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="130" y="112" text-anchor="middle" font-size="7.5" fill="#8b949e">Base NPV: $500K</text>
+${[['Market demand',40,100,'#f85149'],['Regulatory risk',52,96,'#f0b429'],['Labor cost',68,94,'#f0b429'],['Tech complexity',82,90,'#58a6ff'],['Supplier risk',96,88,'#8b949e'],['Currency rate',106,86,'#8b949e']].map(([label,low,high,c],i)=>`
+<rect x="${130-(130-low)}" y="${19+i*14}" width="${130-low}" height="11" rx="2" fill="${c}55" stroke="${c}" stroke-width="0.8"/>
+<rect x="130" y="${19+i*14}" width="${high-130}" height="11" rx="2" fill="${c}88" stroke="${c}" stroke-width="0.8"/>
+<text x="127" y="${27+i*14}" text-anchor="end" font-size="7.5" fill="#c9d1d9">${label}</text>
+`).join('')}
+</svg>`},
+
+{id:'s-curve',name:'S-Curve',tagline:'Cumulative cost or progress plotted over time',
+category:'data-representation',
+usedIn:['7.4','4.5'],
+desc:'A graph showing the cumulative value (cost, labour hours, or work completed) over time. The characteristic S-shape arises because projects start slowly, accelerate in the middle, and taper off near completion. Used to visualise Earned Value data.',
+when:'Control Costs, Monitor & Control Project Work — to visually compare planned vs. actual cumulative spend and detect variances at a glance.',
+tip:'In EVM, you plot three S-curves: PV (planned), EV (earned), and AC (actual). The gap between EV and AC is the cost variance; between EV and PV is the schedule variance.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="30" y1="10" x2="30" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<line x1="30" y1="95" x2="240" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<text x="135" y="108" text-anchor="middle" font-size="8" fill="#8b949e">Time →</text>
+<text x="18" y="55" font-size="8" fill="#8b949e" writing-mode="vertical-rl">Cum. Cost</text>
+<path d="M30,94 C55,93 70,85 100,70 S150,30 220,12" fill="none" stroke="#58a6ff" stroke-width="2"/>
+<path d="M30,94 C55,93 65,88 90,76 S135,45 195,25" fill="none" stroke="#3fb950" stroke-width="2"/>
+<path d="M30,94 C55,93 68,86 95,73 S148,38 210,20" fill="none" stroke="#f85149" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="222" y="13" font-size="8" fill="#58a6ff" font-weight="700">PV</text>
+<text x="197" y="23" font-size="8" fill="#3fb950" font-weight="700">EV</text>
+<text x="212" y="18" font-size="8" fill="#f85149" font-weight="700">AC</text>
+<line x1="195" y1="25" x2="210" y2="20" stroke="#f0b429" stroke-width="1.5"/>
+<text x="175" y="22" font-size="7" fill="#f0b429">CV</text>
+<line x1="195" y1="25" x2="222" y2="13" stroke="#bc8cff" stroke-width="1.5"/>
+<text x="215" y="35" font-size="7" fill="#bc8cff">SV</text>
+</svg>`},
+
+{id:'gantt-chart',name:'Gantt / Bar Chart',tagline:'Activity bars on a time axis — schedule visualisation',
+category:'data-representation',
+usedIn:['6.5','6.6'],
+desc:'A horizontal bar chart where each activity is represented as a bar spanning its start to finish date. The most widely used schedule communication tool — provides an immediate visual of what is planned when, and tracking of actual vs. planned progress.',
+when:'Develop Schedule, Control Schedule — for communicating the project schedule to stakeholders and tracking execution against the baseline.',
+tip:'Gantt charts show WHEN but not WHY activities are sequenced that way. Use a network diagram alongside a Gantt for full schedule analysis — the Gantt alone hides dependencies.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="70" y="5" width="185" height="10" rx="2" fill="#21262d"/>
+${['W1','W2','W3','W4','W5','W6','W7','W8','W9'].map((w,i)=>`<text x="${73+i*21}" y="13" font-size="7" fill="#8b949e">${w}</text><line x1="${71+i*21}" y1="14" x2="${71+i*21}" y2="110" stroke="#30363d" stroke-width="0.5"/>`).join('')}
+${[['Requirements',0,3,'#58a6ff',1],['Design',2,4,'#f0b429',0.7],['Development',4,7,'#3fb950',0.5],['Testing',6,8,'#bc8cff',0.2],['Deployment',8,1,'#f85149',0]].map(([task,start,dur,c,done],i)=>`
+<text x="66" y="${26+i*17}" text-anchor="end" font-size="8" fill="#c9d1d9">${task}</text>
+<rect x="${71+start*21}" y="${18+i*17}" width="${dur*21}" height="11" rx="2" fill="${c}33" stroke="${c}" stroke-width="1.2"/>
+${done>0?`<rect x="${71+start*21}" y="${18+i*17}" width="${dur*21*done}" height="11" rx="2" fill="${c}77"/>`:''}`)  .join('')}
+<line x1="${71+5.5*21}" y1="5" x2="${71+5.5*21}" y2="110" stroke="#f0b429" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="${73+5.5*21}" y="10" font-size="7.5" fill="#f0b429">Today</text>
+</svg>`},
+
+// ─── SCHEDULING ──────────────────────────────────────────────────────
+{id:'cpm',name:'Critical Path Method (CPM)',tagline:'Find the longest path — minimum project duration',
+category:'scheduling',
+usedIn:['6.5'],
+desc:'A schedule network analysis technique that calculates the longest path from start to finish through the project network. Activities on the critical path have zero float — any delay directly extends the project end date.',
+when:'Develop Schedule — after sequencing activities, to determine the minimum project duration and identify which activities have no scheduling flexibility.',
+tip:'Activities with zero float are critical. Float (or slack) = LS−ES = LF−EF. A negative float means you\'re already behind schedule before you start.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="12" text-anchor="middle" font-size="9" fill="#bc8cff" font-weight="700">NETWORK DIAGRAM</text>
+${[['S',22,58,'#3fb950'],['A',72,28,'#f85149'],['B',72,88,'#58a6ff'],['C',140,28,'#f85149'],['D',140,88,'#58a6ff'],['E',208,58,'#3fb950']].map(([n,x,y,c])=>`
+<rect x="${x-18}" y="${y-12}" width="36" height="24" rx="4" fill="${c}33" stroke="${c}" stroke-width="${c==='#f85149'?2:1}"/>
+<text x="${x}" y="${y+4}" text-anchor="middle" font-size="10" fill="${c}" font-weight="700">${n}</text>
+`).join('')}
+${[['S','A',22,58,72,28,'#f85149'],['S','B',22,58,72,88,'#8b949e'],['A','C',72,28,140,28,'#f85149'],['B','D',72,88,140,88,'#8b949e'],['C','E',140,28,208,58,'#f85149'],['D','E',140,88,208,58,'#8b949e'],['A','D',72,28,140,88,'#8b949e66']].map(([f,t,x1,y1,x2,y2,c])=>`
+<line x1="${x1+18}" y1="${y1}" x2="${x2-18}" y2="${y2}" stroke="${c}" stroke-width="${c==='#f85149'?2:1}" marker-end="url(#sa)"/>
+`).join('')}
+<defs><marker id="sa" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto"><polygon points="0 0,5 2,0 4" fill="#8b949e"/></marker></defs>
+<text x="130" y="108" text-anchor="middle" font-size="8" fill="#f85149">━━ Critical Path: S→A→C→E (Float=0)</text>
+</svg>`},
+
+{id:'critical-chain',name:'Critical Chain Method',tagline:'Buffer-based scheduling — protect the end date',
+category:'scheduling',
+usedIn:['6.5'],
+desc:'A schedule network analysis technique that addresses resource dependencies and uncertainty by adding buffers — a Project Buffer at the end and Feeding Buffers at merge points — rather than padding individual activities.',
+when:'Develop Schedule — especially in resource-constrained environments where the same resource is shared across multiple paths.',
+tip:'Critical Chain removes safety from individual activities (to prevent Parkinson\'s Law) and concentrates it in explicit buffers that you can monitor and manage.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="12" text-anchor="middle" font-size="9" fill="#bc8cff" font-weight="700">CRITICAL CHAIN + BUFFERS</text>
+${[['Task A\n5d',18,38,55,22,'#bc8cff'],['Task B\n4d',80,38,42,22,'#bc8cff'],['Task C\n6d',130,38,55,22,'#bc8cff'],['PB\n3d',193,38,38,22,'#f0b429']].map(([label,x,y,w,h,c])=>`
+<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="${c}33" stroke="${c}" stroke-width="1.5"/>
+<text x="${x+w/2}" y="${y+h/2+3}" text-anchor="middle" font-size="8" fill="${c}" font-weight="600">${label}</text>
+`).join('')}
+<rect x="18" y="75" width="35" height="20" rx="3" fill="#58a6ff33" stroke="#58a6ff" stroke-width="1"/>
+<text x="35" y="88" text-anchor="middle" font-size="7.5" fill="#58a6ff">Non-crit A</text>
+<rect x="58" y="75" width="15" height="20" rx="3" fill="#3fb95033" stroke="#3fb950" stroke-width="1"/>
+<text x="65" y="88" text-anchor="middle" font-size="7" fill="#3fb950">FB</text>
+<line x1="73" y1="85" x2="80" y2="49" stroke="#3fb950" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="130" y="108" text-anchor="middle" font-size="8" fill="#8b949e">PB=Project Buffer  FB=Feeding Buffer</text>
+</svg>`},
+
+{id:'crashing',name:'Crashing',tagline:'Add resources to shorten critical path (cost ↑)',
+category:'scheduling',
+usedIn:['6.5'],
+desc:'A schedule compression technique that shortens the project duration by adding resources (people, equipment, money) to critical path activities. Always increases cost — the goal is to find the most cost-effective crash option.',
+when:'Develop Schedule, Control Schedule — when the schedule must be shortened and additional budget is available.',
+tip:'Crash only critical path activities — adding resources to non-critical tasks will not shorten the project. Calculate crash cost per day to find the cheapest option first.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="65" y="14" text-anchor="middle" font-size="9" fill="#8b949e">BEFORE CRASH</text>
+<text x="195" y="14" text-anchor="middle" font-size="9" fill="#f85149">AFTER CRASH</text>
+<line x1="130" y1="8" x2="130" y2="112" stroke="#30363d" stroke-width="1" stroke-dasharray="4,3"/>
+${[['A',5,22,55,14],['B',5,40,75,14],['C',5,58,65,14]].map(([n,x,y,w,h])=>`
+<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="#8b949e33" stroke="#8b949e" stroke-width="1"/>
+<text x="${x+4}" y="${y+h/2+4}" font-size="7.5" fill="#8b949e">${n}:${w/10}d</text>
+`).join('')}
+${[['A',135,22,30,14,'#3fb950'],['B',135,40,75,14,'#f85149'],['C',135,58,35,14,'#f0b429']].map(([n,x,y,w,h,c])=>`
+<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="${c}33" stroke="${c}" stroke-width="${c==='#f85149'?2:1}"/>
+<text x="${x+3}" y="${y+h/2+4}" font-size="7.5" fill="${c}">${n}:${w/10}d</text>
+`).join('')}
+<line x1="60" y1="78" x2="60" y2="88" stroke="#8b949e" stroke-width="1.5"/>
+<text x="60" y="98" text-anchor="middle" font-size="8" fill="#8b949e">7.5d</text>
+<line x1="210" y1="78" x2="210" y2="88" stroke="#f85149" stroke-width="1.5"/>
+<text x="210" y="98" text-anchor="middle" font-size="8" fill="#f85149">5d (↓)</text>
+<text x="163" y="40" font-size="7" fill="#3fb950">+1 Dev</text>
+<text x="163" y="74" text-anchor="middle" font-size="7.5" fill="#f0b429">$+Cost</text>
+</svg>`},
+
+{id:'fast-tracking',name:'Fast-Tracking',tagline:'Parallelise sequential activities (risk ↑)',
+category:'scheduling',
+usedIn:['6.5'],
+desc:'A schedule compression technique that performs activities in parallel that would normally be done sequentially. Does NOT add cost but significantly increases risk — if the upstream activity changes, parallel work may need to be redone.',
+when:'Develop Schedule, Control Schedule — when the schedule must be shortened and additional risk is acceptable.',
+tip:'Use fast-tracking before crashing — it\'s free. The risk is rework, not additional cost. Document the risk formally before proceeding.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="65" y="12" text-anchor="middle" font-size="8.5" fill="#8b949e">Sequential</text>
+<text x="195" y="12" text-anchor="middle" font-size="8.5" fill="#3fb950">Fast-Tracked</text>
+<line x1="130" y1="6" x2="130" y2="112" stroke="#30363d" stroke-width="1" stroke-dasharray="4,3"/>
+<rect x="5" y="20" width="50" height="16" rx="3" fill="#58a6ff33" stroke="#58a6ff" stroke-width="1.5"/>
+<text x="30" y="31" text-anchor="middle" font-size="8" fill="#58a6ff">Design</text>
+<rect x="60" y="20" width="50" height="16" rx="3" fill="#f0b42933" stroke="#f0b429" stroke-width="1.5"/>
+<text x="85" y="31" text-anchor="middle" font-size="8" fill="#f0b429">Build</text>
+<rect x="60" y="54" width="50" height="16" rx="3" fill="#bc8cff33" stroke="#bc8cff" stroke-width="1.5"/>
+<text x="85" y="65" text-anchor="middle" font-size="8" fill="#bc8cff">Test</text>
+<line x1="55" y1="28" x2="60" y2="28" stroke="#8b949e" stroke-width="1" marker-end="url(#sa2)"/>
+<line x1="85" y1="36" x2="85" y2="54" stroke="#8b949e" stroke-width="1" marker-end="url(#sa2)"/>
+<rect x="135" y="20" width="50" height="16" rx="3" fill="#58a6ff33" stroke="#58a6ff" stroke-width="1.5"/>
+<text x="160" y="31" text-anchor="middle" font-size="8" fill="#58a6ff">Design</text>
+<rect x="175" y="20" width="50" height="16" rx="3" fill="#f0b42933" stroke="#f0b429" stroke-width="1.5"/>
+<text x="200" y="31" text-anchor="middle" font-size="8" fill="#f0b429">Build</text>
+<rect x="185" y="40" width="50" height="16" rx="3" fill="#bc8cff33" stroke="#bc8cff" stroke-width="1.5"/>
+<text x="210" y="51" text-anchor="middle" font-size="8" fill="#bc8cff">Test</text>
+<text x="165" y="80" text-anchor="middle" font-size="8" fill="#3fb950">↑ Overlap = shorter</text>
+<text x="165" y="92" text-anchor="middle" font-size="8" fill="#f85149">⚠ Risk: rework</text>
+<defs><marker id="sa2" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto"><polygon points="0 0,5 2,0 4" fill="#8b949e"/></marker></defs>
+</svg>`},
+
+{id:'resource-leveling',name:'Resource Leveling',tagline:'Resolve over-allocation — may extend schedule',
+category:'scheduling',
+usedIn:['6.5','9.6'],
+desc:'A technique used to adjust the project schedule to resolve resource over-allocation or conflicts. Activities are delayed (using their float, or extending beyond it) until resources are no longer over-committed.',
+when:'Develop Schedule, Control Resources — whenever a resource is assigned to more work than they can physically perform in a given period.',
+tip:'Resource leveling almost always extends the project end date. If the end date cannot move, the only solutions are adding resources (crashing) or reducing scope.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="65" y="12" text-anchor="middle" font-size="8.5" fill="#f85149">Over-allocated</text>
+<text x="195" y="12" text-anchor="middle" font-size="8.5" fill="#3fb950">Leveled</text>
+<line x1="130" y1="6" x2="130" y2="112" stroke="#30363d" stroke-width="1" stroke-dasharray="4,3"/>
+${[[5,3,'#f85149'],[5,6,'#f85149'],[5,3,'#f85149'],[5,3,'#f85149'],[5,3,'#f85149']].map(([x,units,c],i)=>`
+<rect x="${10+i*20}" y="${52-units*8}" width="18" height="${units*8}" rx="2" fill="${c}55" stroke="${c}" stroke-width="1"/>
+`).join('')}
+<line x1="8" y1="36" x2="108" y2="36" stroke="#f85149" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="110" y="39" font-size="7" fill="#f85149">Max</text>
+${[[3],[3],[2],[3],[3]].map(([units],i)=>`
+<rect x="${140+i*20}" y="${52-units*8}" width="18" height="${units*8}" rx="2" fill="#3fb95055" stroke="#3fb950" stroke-width="1"/>
+`).join('')}
+<line x1="138" y1="36" x2="238" y2="36" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="240" y="39" font-size="7" fill="#3fb950">Max</text>
+<text x="65" y="65" text-anchor="middle" font-size="8" fill="#f85149">⚠ 6 units > max 4</text>
+<text x="195" y="65" text-anchor="middle" font-size="8" fill="#3fb950">✓ Within capacity</text>
+<text x="130" y="108" text-anchor="middle" font-size="8" fill="#8b949e">⚠ Schedule often extends</text>
+</svg>`},
+
+{id:'resource-smoothing',name:'Resource Smoothing',tagline:'Optimise within float — schedule unchanged',
+category:'scheduling',
+usedIn:['6.5'],
+desc:'Adjusts only activities that have total float available, shifting them within their float limits to optimise resource usage. Unlike resource leveling, it never extends the project end date or violates deadline constraints.',
+when:'Develop Schedule — when you want to reduce resource peaks and valleys without changing the project end date.',
+tip:'The key difference from resource leveling: smoothing respects the critical path and schedule end date — leveling can move them.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="65" y="12" text-anchor="middle" font-size="8.5" fill="#f0b429">Before Smoothing</text>
+<text x="195" y="12" text-anchor="middle" font-size="8.5" fill="#3fb950">After Smoothing</text>
+<line x1="130" y1="6" x2="130" y2="112" stroke="#30363d" stroke-width="1" stroke-dasharray="4,3"/>
+${[[4],[6],[6],[3],[2]].map(([u],i)=>`<rect x="${10+i*20}" y="${72-u*8}" width="18" height="${u*8}" rx="2" fill="#f0b42955" stroke="#f0b429" stroke-width="1"/>`).join('')}
+${[[4],[5],[5],[4],[3]].map(([u],i)=>`<rect x="${140+i*20}" y="${72-u*8}" width="18" height="${u*8}" rx="2" fill="#3fb95055" stroke="#3fb950" stroke-width="1"/>`).join('')}
+<text x="65" y="84" text-anchor="middle" font-size="8" fill="#f0b429">Uneven peaks</text>
+<text x="195" y="84" text-anchor="middle" font-size="8" fill="#3fb950">Smoother load</text>
+<text x="65" y="96" text-anchor="middle" font-size="7.5" fill="#8b949e">End date: Day 10</text>
+<text x="195" y="96" text-anchor="middle" font-size="7.5" fill="#3fb950">End date: Day 10 ✓</text>
+<text x="130" y="110" text-anchor="middle" font-size="8" fill="#3fb950">✓ No change to schedule</text>
+</svg>`},
+
+{id:'pdm',name:'Precedence Diagramming Method (PDM)',tagline:'FS · FF · SS · SF dependency relationships',
+category:'scheduling',
+usedIn:['6.3'],
+desc:'The technique for constructing schedule network diagrams using nodes (rectangles) to represent activities and arrows to show dependencies. Supports four dependency types: Finish-to-Start, Finish-to-Finish, Start-to-Start, Start-to-Finish.',
+when:'Sequence Activities — every time you build a project schedule network diagram.',
+tip:'FS (Finish-to-Start) is the most common and is assumed by default. SF (Start-to-Finish) is extremely rare — if you think you need one, look again.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+${[['FS',20,20,'Predecessor','Successor','Finish→Start'],['FF',20,50,'Task A','Task B','Finish→Finish'],['SS',20,80,'Task X','Task Y','Start→Start']].map(([type,y0,y,n1,n2,label],i)=>`
+<rect x="12" y="${y}" width="55" height="18" rx="3" fill="#58a6ff22" stroke="#58a6ff" stroke-width="1.2"/>
+<text x="39" y="${y+12}" text-anchor="middle" font-size="8" fill="#58a6ff">${n1}</text>
+<rect x="130" y="${y}" width="55" height="18" rx="3" fill="#3fb95022" stroke="#3fb950" stroke-width="1.2"/>
+<text x="157" y="${y+12}" text-anchor="middle" font-size="8" fill="#3fb950">${n2}</text>
+<line x1="67" y1="${y+9}" x2="130" y2="${y+9}" stroke="#f0b429" stroke-width="1.5" marker-end="url(#pdm-arr)"/>
+<text x="98" y="${y+7}" text-anchor="middle" font-size="7.5" fill="#f0b429" font-weight="700">${type}</text>
+<text x="193" y="${y+12}" font-size="7.5" fill="#8b949e">${label}</text>
+`).join('')}
+<defs><marker id="pdm-arr" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto"><polygon points="0 0,5 2,0 4" fill="#f0b429"/></marker></defs>
+</svg>`},
+
+{id:'rolling-wave',name:'Rolling Wave Planning',tagline:'Plan near-term in detail, far-term at high level',
+category:'scheduling',
+usedIn:['6.2'],
+desc:'A progressive elaboration planning technique where near-term work is planned in detail while future work remains at a higher level of the WBS. Detail is added as more information becomes available.',
+when:'Define Activities — on any project where requirements or the approach are not fully known upfront, especially agile or iterative projects.',
+tip:'This is not poor planning — it\'s acknowledging that detailed plans for work 6 months away will be wrong. Plan the horizon you can see clearly.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="14" text-anchor="middle" font-size="9" fill="#bc8cff" font-weight="700">PLANNING HORIZON</text>
+<rect x="10" y="22" width="80" height="78" rx="5" fill="#3fb95022" stroke="#3fb950" stroke-width="2"/>
+<text x="50" y="40" text-anchor="middle" font-size="9" fill="#3fb950" font-weight="700">Now</text>
+<text x="50" y="53" text-anchor="middle" font-size="8" fill="#3fb950">Detailed WPs</text>
+${['Task 1.1','Task 1.2','Task 1.3','Task 1.4'].map((t,i)=>`<text x="50" y="${64+i*10}" text-anchor="middle" font-size="7.5" fill="#3fb95099">${t}</text>`).join('')}
+<rect x="100" y="30" width="70" height="62" rx="5" fill="#f0b42922" stroke="#f0b429" stroke-width="1.5"/>
+<text x="135" y="48" text-anchor="middle" font-size="9" fill="#f0b429" font-weight="700">Near</text>
+<text x="135" y="61" text-anchor="middle" font-size="8" fill="#f0b429">Work packages</text>
+<text x="135" y="73" text-anchor="middle" font-size="7.5" fill="#f0b42999">Phase 2 defined</text>
+<rect x="180" y="40" width="70" height="50" rx="5" fill="#8b949e22" stroke="#8b949e" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="215" y="58" text-anchor="middle" font-size="9" fill="#8b949e" font-weight="700">Future</text>
+<text x="215" y="71" text-anchor="middle" font-size="8" fill="#8b949e">High-level only</text>
+<text x="215" y="83" text-anchor="middle" font-size="7.5" fill="#8b949e88">Phase 3 TBD</text>
+</svg>`},
+
+{id:'leads-lags',name:'Leads & Lags',tagline:'Accelerate or delay between dependent activities',
+category:'scheduling',
+usedIn:['6.3','6.5'],
+desc:'A Lead is a modification that accelerates a successor activity — it allows the successor to start before the predecessor finishes (negative lag). A Lag is a deliberate wait time inserted between activities (positive delay).',
+when:'Sequence Activities, Develop Schedule — when activities have complex temporal relationships that simple FS/SS dependencies cannot express.',
+tip:'Lead = negative lag. A lead of 2 days on a FS relationship means the successor can start 2 days BEFORE the predecessor finishes. Overuse of leads creates fragile, unplanned fast-tracking.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="65" y="12" text-anchor="middle" font-size="9" fill="#3fb950" font-weight="700">LEAD</text>
+<text x="195" y="12" text-anchor="middle" font-size="9" fill="#f85149" font-weight="700">LAG</text>
+<line x1="130" y1="6" x2="130" y2="112" stroke="#30363d" stroke-width="1" stroke-dasharray="4,3"/>
+<rect x="5" y="20" width="60" height="18" rx="3" fill="#3fb95022" stroke="#3fb950" stroke-width="1.5"/>
+<text x="35" y="32" text-anchor="middle" font-size="8.5" fill="#3fb950">Predecessor</text>
+<rect x="45" y="44" width="60" height="18" rx="3" fill="#3fb95022" stroke="#3fb950" stroke-width="1.5"/>
+<text x="75" y="56" text-anchor="middle" font-size="8.5" fill="#3fb950">Successor</text>
+<text x="65" y="72" text-anchor="middle" font-size="8" fill="#3fb950">Lead = −2d</text>
+<text x="65" y="83" text-anchor="middle" font-size="7.5" fill="#8b949e">Overlap allowed</text>
+<text x="65" y="94" text-anchor="middle" font-size="7.5" fill="#3fb950">Schedule ↓</text>
+<rect x="135" y="20" width="60" height="18" rx="3" fill="#f8514922" stroke="#f85149" stroke-width="1.5"/>
+<text x="165" y="32" text-anchor="middle" font-size="8.5" fill="#f85149">Predecessor</text>
+<rect x="175" y="56" width="60" height="18" rx="3" fill="#f8514922" stroke="#f85149" stroke-width="1.5"/>
+<text x="205" y="68" text-anchor="middle" font-size="8.5" fill="#f85149">Successor</text>
+<text x="195" y="84" text-anchor="middle" font-size="8" fill="#f85149">Lag = +3d</text>
+<text x="195" y="95" text-anchor="middle" font-size="7.5" fill="#8b949e">Cure time / review</text>
+<rect x="147" y="42" width="36" height="10" rx="2" fill="#f0b42933" stroke="#f0b429" stroke-width="1"/>
+<text x="165" y="50" text-anchor="middle" font-size="7.5" fill="#f0b429">wait 3d</text>
+</svg>`},
+
+
+// ─── ESTIMATING ──────────────────────────────────────────────────────
+{id:'analogous-estimating',name:'Analogous Estimating',tagline:'Use a similar past project as a reference point',
+category:'estimating',
+usedIn:['6.4','7.2'],
+desc:'A technique that uses historical data from a similar past project as the basis for estimating the current project. Fast and low-cost, but less accurate — relies on the similarity of the projects and the estimator\'s expertise.',
+when:'Early in planning when limited details are available and a rough order of magnitude (ROM) estimate is acceptable.',
+tip:'Analogous = top-down. It\'s the quickest but least accurate. ROM accuracy is typically −25% to +75%. Requires expert judgment to validate the comparison.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="10" y="18" width="100" height="72" rx="6" fill="#8b949e22" stroke="#8b949e" stroke-width="1.5"/>
+<text x="60" y="38" text-anchor="middle" font-size="9" fill="#8b949e" font-weight="700">PAST PROJECT</text>
+<text x="60" y="53" text-anchor="middle" font-size="8" fill="#8b949e">Duration: 8 months</text>
+<text x="60" y="67" text-anchor="middle" font-size="8" fill="#8b949e">Cost: $400K</text>
+<text x="60" y="81" text-anchor="middle" font-size="8" fill="#8b949e">Team: 6 people</text>
+<text x="130" y="58" text-anchor="middle" font-size="20" fill="#f85149" opacity="0.7">→</text>
+<rect x="150" y="18" width="100" height="72" rx="6" fill="#f8514922" stroke="#f85149" stroke-width="2"/>
+<text x="200" y="38" text-anchor="middle" font-size="9" fill="#f85149" font-weight="700">NEW PROJECT</text>
+<text x="200" y="53" text-anchor="middle" font-size="8" fill="#f85149">~Similar scope</text>
+<text x="200" y="67" text-anchor="middle" font-size="8" fill="#f85149">Est: ~$420K</text>
+<text x="200" y="81" text-anchor="middle" font-size="8" fill="#f85149">Est: ~9 months</text>
+<text x="130" y="108" text-anchor="middle" font-size="8.5" fill="#8b949e">ROM accuracy: −25% to +75%</text>
+</svg>`},
+
+{id:'parametric-estimating',name:'Parametric Estimating',tagline:'Unit rate × quantity — scalable and repeatable',
+category:'estimating',
+usedIn:['6.4','7.2'],
+desc:'Uses a statistical relationship between historical data and other variables (unit rate × quantity) to calculate an estimate. More accurate than analogous estimating when a reliable unit rate exists.',
+when:'Estimating activity durations or costs when unit rates are known — e.g. $X per line of code, Y hours per test case.',
+tip:'The model is only as good as its historical data. A parametric estimate for a novel technology may be wildly inaccurate if the unit rate is guessed.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="14" text-anchor="middle" font-size="10" fill="#f85149" font-weight="700">UNIT RATE × QUANTITY</text>
+${[['Lines of Code','5,000 LOC','× $12/LOC','= $60,000'],['Test Cases','200 tests','× 2 hrs/test','= 400 hrs'],['Story Points','120 pts','× 0.5 days/pt','= 60 days']].map(([label,qty,rate,result],i)=>`
+<rect x="10" y="${22+i*27}" width="240" height="22" rx="4" fill="${i%2?'#161b22':'#1a1f26'}" stroke="#f8514933"/>
+<text x="16" y="${36+i*27}" font-size="8.5" fill="#8b949e">${label}</text>
+<text x="100" y="${36+i*27}" font-size="9" fill="#f0b429" font-weight="600">${qty}</text>
+<text x="152" y="${36+i*27}" font-size="9" fill="#58a6ff">${rate}</text>
+<text x="230" y="${36+i*27}" text-anchor="end" font-size="9" fill="#f85149" font-weight="700">${result}</text>
+`).join('')}
+<rect x="10" y="105" width="240" height="8" rx="3" fill="#f8514922"/>
+<text x="130" y="112" text-anchor="middle" font-size="8" fill="#f85149" font-weight="600">Total Estimate: $60K + 460 hrs</text>
+</svg>`},
+
+{id:'bottom-up-estimating',name:'Bottom-Up Estimating',tagline:'Sum individual work packages — most accurate',
+category:'estimating',
+usedIn:['6.4','7.2'],
+desc:'Estimating individual work packages or activities in detail, then rolling them up to arrive at a total project estimate. The most accurate estimating technique but also the most time-consuming.',
+when:'Later in planning when the WBS is fully decomposed and accurate estimates are required for the cost and schedule baselines.',
+tip:'Bottom-up = most accurate but most time-consuming. The accuracy depends entirely on how well the work is decomposed — garbage decomposition = garbage estimate.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="90" y="6" width="80" height="18" rx="4" fill="#f8514933" stroke="#f85149" stroke-width="1.5"/>
+<text x="130" y="18" text-anchor="middle" font-size="9" fill="#f85149" font-weight="700">PROJECT $285K</text>
+<line x1="130" y1="24" x2="65" y2="36" stroke="#8b949e" stroke-width="1"/>
+<line x1="130" y1="24" x2="195" y2="36" stroke="#8b949e" stroke-width="1"/>
+<rect x="22" y="36" width="86" height="16" rx="3" fill="#f0b42922" stroke="#f0b429" stroke-width="1.2"/>
+<text x="65" y="47" text-anchor="middle" font-size="8.5" fill="#f0b429">Phase 1: $120K</text>
+<rect x="152" y="36" width="86" height="16" rx="3" fill="#3fb95022" stroke="#3fb950" stroke-width="1.2"/>
+<text x="195" y="47" text-anchor="middle" font-size="8.5" fill="#3fb950">Phase 2: $165K</text>
+<line x1="65" y1="52" x2="40" y2="64" stroke="#8b949e" stroke-width="0.8"/>
+<line x1="65" y1="52" x2="90" y2="64" stroke="#8b949e" stroke-width="0.8"/>
+<line x1="195" y1="52" x2="170" y2="64" stroke="#8b949e" stroke-width="0.8"/>
+<line x1="195" y1="52" x2="220" y2="64" stroke="#8b949e" stroke-width="0.8"/>
+${[['$30K',15,64,'#58a6ff'],['$90K',68,64,'#58a6ff'],['$75K',143,64,'#58a6ff'],['$90K',197,64,'#58a6ff']].map(([v,x,y,c])=>`
+<rect x="${x}" y="${y}" width="44" height="14" rx="2" fill="${c}22" stroke="${c}" stroke-width="0.8"/>
+<text x="${x+22}" y="${y+10}" text-anchor="middle" font-size="8" fill="${c}">${v}</text>
+`).join('')}
+<text x="130" y="94" text-anchor="middle" font-size="9" fill="#8b949e">↑ Roll-up: individual → total</text>
+<text x="130" y="108" text-anchor="middle" font-size="8.5" fill="#f85149">Most accurate. Requires full WBS.</text>
+</svg>`},
+
+{id:'three-point-pert',name:'Three-Point Estimating (PERT)',tagline:'O + 4M + P ÷ 6 — account for uncertainty',
+category:'estimating',
+usedIn:['6.4','7.2'],
+desc:'Uses three estimates — Optimistic (O), Most Likely (M), and Pessimistic (P) — to calculate a weighted average that accounts for uncertainty. PERT formula: E = (O + 4M + P) / 6. Standard deviation: σ = (P−O)/6.',
+when:'Estimating activity durations and costs when there is significant uncertainty and you need to model the range of possible outcomes.',
+tip:'The PERT formula weighs the Most Likely estimate 4× more than the extremes. For triangular distribution: E = (O+M+P)/3 — no 4× weighting.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="25" y1="10" x2="25" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<line x1="25" y1="95" x2="240" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<polyline points="25,92 65,92 85,88 105,72 125,30 145,72 165,88 185,92 240,92" fill="#f8514922" stroke="#f85149" stroke-width="2"/>
+<line x1="65" y1="92" x2="65" y2="18" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="65" y="14" text-anchor="middle" font-size="8" fill="#3fb950" font-weight="700">O</text>
+<text x="65" y="106" text-anchor="middle" font-size="8" fill="#3fb950">5d</text>
+<line x1="125" y1="30" x2="125" y2="18" stroke="#58a6ff" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="125" y="14" text-anchor="middle" font-size="8" fill="#58a6ff" font-weight="700">M</text>
+<text x="125" y="106" text-anchor="middle" font-size="8" fill="#58a6ff">10d</text>
+<line x1="185" y1="92" x2="185" y2="18" stroke="#f0b429" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="185" y="14" text-anchor="middle" font-size="8" fill="#f0b429" font-weight="700">P</text>
+<text x="185" y="106" text-anchor="middle" font-size="8" fill="#f0b429">21d</text>
+<rect x="190" y="22" width="65" height="44" rx="4" fill="#21262d" stroke="#30363d"/>
+<text x="222" y="37" text-anchor="middle" font-size="8" fill="#8b949e">E=(O+4M+P)/6</text>
+<text x="222" y="50" text-anchor="middle" font-size="9" fill="#f85149" font-weight="700">E = 11d</text>
+<text x="222" y="62" text-anchor="middle" font-size="7.5" fill="#8b949e">σ=(P−O)/6=2.7</text>
+</svg>`},
+
+{id:'tcpi',name:'To-Complete Performance Index (TCPI)',tagline:'Required future efficiency to hit your target',
+category:'estimating',
+usedIn:['7.4'],
+desc:'TCPI measures the cost performance that must be achieved on the remaining work to meet a specified management goal (BAC or EAC). TCPI = (BAC−EV) / (BAC−AC). A TCPI > 1.1 is often considered unrealistic.',
+when:'Control Costs — when the sponsor asks "can we still finish within budget?" after current performance has deviated from plan.',
+tip:'TCPI > 1.0 means you need to work MORE efficiently than you have been. If current CPI is 0.8 and TCPI is 1.2, recovery is essentially impossible without scope reduction.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="13" text-anchor="middle" font-size="10" fill="#f85149" font-weight="700">TCPI FORMULA</text>
+<rect x="10" y="20" width="240" height="28" rx="5" fill="#21262d" stroke="#f85149" stroke-width="1.5"/>
+<text x="130" y="33" text-anchor="middle" font-size="9.5" fill="#c9d1d9">TCPI = (BAC − EV) / (BAC − AC)</text>
+<text x="130" y="44" text-anchor="middle" font-size="8.5" fill="#8b949e">Work remaining ÷ Budget remaining</text>
+<rect x="10" y="54" width="115" height="38" rx="4" fill="#3fb95022" stroke="#3fb950" stroke-width="1.2"/>
+<text x="67" y="68" text-anchor="middle" font-size="8.5" fill="#3fb950" font-weight="700">TCPI = 0.95</text>
+<text x="67" y="80" text-anchor="middle" font-size="8" fill="#3fb950">Slightly easier — on track</text>
+<rect x="135" y="54" width="115" height="38" rx="4" fill="#f8514922" stroke="#f85149" stroke-width="1.2"/>
+<text x="192" y="68" text-anchor="middle" font-size="8.5" fill="#f85149" font-weight="700">TCPI = 1.25</text>
+<text x="192" y="80" text-anchor="middle" font-size="8" fill="#f85149">Unrealistic — replan needed</text>
+<text x="130" y="108" text-anchor="middle" font-size="8" fill="#8b949e">CPI > 1 = under budget | TCPI > 1 = need more efficiency</text>
+</svg>`},
+
+// ─── INTERPERSONAL & TEAM ─────────────────────────────────────────────
+{id:'conflict-management',name:'Conflict Management',tagline:'5 modes — choose the right one for the situation',
+category:'interpersonal',
+usedIn:['9.5'],
+desc:'A set of five techniques for resolving disagreements: Collaborate/Problem-Solve (win-win, preferred), Compromise/Reconcile (lose-lose), Smooth/Accommodate (yield), Force/Direct (win-lose), Withdraw/Avoid (lose-lose, worst).',
+when:'Manage Team — whenever interpersonal conflicts arise between project team members, stakeholders, or functional managers.',
+tip:'Collaborate/Problem-Solve is the BEST conflict resolution method per PMBOK. Withdraw/Avoid is the WORST — it never resolves the underlying issue.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="30" y1="10" x2="30" y2="100" stroke="#30363d" stroke-width="1.5"/>
+<line x1="30" y1="100" x2="240" y2="100" stroke="#30363d" stroke-width="1.5"/>
+<text x="135" y="110" text-anchor="middle" font-size="8" fill="#8b949e">Concern for Others →</text>
+<text x="14" y="55" font-size="8" fill="#8b949e" writing-mode="vertical-rl">Self →</text>
+${[['Collaborate\n★ Best',195,20,'#3fb950'],['Compromise',195,60,'#f0b429'],['Force',50,20,'#f85149'],['Smooth',50,60,'#58a6ff'],['Avoid\n✗ Worst',50,90,'#8b949e']].map(([label,x,y,c])=>`
+<circle cx="${x}" cy="${y}" r="12" fill="${c}33" stroke="${c}" stroke-width="${label.includes('★')?2:1}"/>
+<text x="${x}" y="${y+(label.includes('\n')?-2:4)}" text-anchor="middle" font-size="7" fill="${c}" font-weight="${label.includes('★')?'700':'400'}">${label.split('\n')[0]}</text>
+${label.includes('\n')?`<text x="${x}" y="${y+8}" text-anchor="middle" font-size="7" fill="${c}" font-weight="700">${label.split('\n')[1]}</text>`:''}
+`).join('')}
+</svg>`},
+
+{id:'negotiation',name:'Negotiation',tagline:'Reach mutually acceptable agreements',
+category:'interpersonal',
+usedIn:['9.3','12.2'],
+desc:'A discussion aimed at reaching an agreement. In project management, used with team members to agree on responsibilities, with vendors on contract terms, and with functional managers for resource assignments.',
+when:'Acquire Resources, Conduct Procurements — any time project objectives must be balanced with competing interests.',
+tip:'Interest-based (principled) negotiation focuses on underlying interests, not positions — it leads to more durable agreements than positional bargaining.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="10" y="22" width="90" height="70" rx="8" fill="#58a6ff22" stroke="#58a6ff" stroke-width="1.5"/>
+<text x="55" y="46" text-anchor="middle" font-size="9" fill="#58a6ff" font-weight="700">Party A</text>
+<text x="55" y="60" text-anchor="middle" font-size="8" fill="#8b949e">Position: $100K</text>
+<text x="55" y="73" text-anchor="middle" font-size="7.5" fill="#58a6ff">Interest: timeline</text>
+<rect x="160" y="22" width="90" height="70" rx="8" fill="#3fb95022" stroke="#3fb950" stroke-width="1.5"/>
+<text x="205" y="46" text-anchor="middle" font-size="9" fill="#3fb950" font-weight="700">Party B</text>
+<text x="205" y="60" text-anchor="middle" font-size="8" fill="#8b949e">Position: $80K</text>
+<text x="205" y="73" text-anchor="middle" font-size="7.5" fill="#3fb950">Interest: quality</text>
+<rect x="88" y="38" width="84" height="36" rx="6" fill="#f0b42922" stroke="#f0b429" stroke-width="1.5"/>
+<text x="130" y="54" text-anchor="middle" font-size="8.5" fill="#f0b429" font-weight="700">AGREEMENT</text>
+<text x="130" y="67" text-anchor="middle" font-size="8" fill="#8b949e">$90K + SLA</text>
+<text x="130" y="108" text-anchor="middle" font-size="8.5" fill="#f0b429">Focus on interests, not positions</text>
+</svg>`},
+
+{id:'emotional-intelligence',name:'Emotional Intelligence (EI)',tagline:'Self-awareness + empathy = better leadership',
+category:'interpersonal',
+usedIn:['9.5'],
+desc:'The ability to identify, assess, and manage the personal emotions of oneself and of others. High-EI project managers build stronger teams, resolve conflicts more effectively, and inspire greater commitment.',
+when:'Manage Team, Develop Team — throughout the project to build trust, manage conflict, and motivate team members.',
+tip:'The four EI domains: Self-Awareness, Self-Management, Social Awareness (Empathy), and Relationship Management. PMs with high EI tend to outperform technically superior but emotionally unaware peers.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<circle cx="130" cy="58" r="38" fill="none" stroke="#38bcd633" stroke-width="20"/>
+<circle cx="130" cy="58" r="20" fill="#38bcd622" stroke="#38bcd6" stroke-width="1.5"/>
+<text x="130" y="62" text-anchor="middle" font-size="8" fill="#38bcd6" font-weight="700">SELF</text>
+${[['Self-Awareness',130,12,'#38bcd6'],['Self-Management',220,58,'#3fb950'],['Social Awareness',130,105,'#58a6ff'],['Relationship Mgmt',40,58,'#f0b429']].map(([label,x,y,c])=>`
+<circle cx="${x}" cy="${y}" r="14" fill="${c}22" stroke="${c}" stroke-width="1.5"/>
+<text x="${x}" y="${y+4}" text-anchor="middle" font-size="6.5" fill="${c}" font-weight="600">${label.split(' ').join('\n').split('\n').map((w,i,a)=>`<tspan x="${x}" dy="${i===0?(-(a.length-1)*4):8}">${w}</tspan>`).join('')}</text>
+`).join('')}
+</svg>`},
+
+{id:'facilitation',name:'Facilitation',tagline:'Guide groups to productive outcomes',
+category:'interpersonal',
+usedIn:['4.1','5.2','9.4','13.3'],
+desc:'Ensures that a meeting or group exercise is focused, effective, and productive. A skilled facilitator keeps discussions on track, draws out quieter participants, manages dominant voices, and drives toward decisions.',
+when:'Kickoff meetings, requirements workshops, retrospectives, risk workshops, and any meeting where group input is needed.',
+tip:'A good facilitator stays neutral — their job is to manage the process, not advocate for a particular outcome. Separate the role of facilitator from the role of participant.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="70" y="8" width="120" height="22" rx="5" fill="#38bcd633" stroke="#38bcd6" stroke-width="1.5"/>
+<text x="130" y="23" text-anchor="middle" font-size="9" fill="#38bcd6" font-weight="700">FACILITATOR</text>
+<line x1="130" y1="30" x2="55" y2="48" stroke="#38bcd6" stroke-width="1.2" stroke-dasharray="3,2"/>
+<line x1="130" y1="30" x2="130" y2="48" stroke="#38bcd6" stroke-width="1.2" stroke-dasharray="3,2"/>
+<line x1="130" y1="30" x2="205" y2="48" stroke="#38bcd6" stroke-width="1.2" stroke-dasharray="3,2"/>
+${[[55,48,'#3fb950','Dev'],[130,48,'#f0b429','PM'],[205,48,'#58a6ff','QA']].map(([cx,cy,c,l])=>`
+<circle cx="${cx}" cy="${cy+12}" r="13" fill="${c}22" stroke="${c}" stroke-width="1.5"/>
+<text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="9" fill="${c}" font-weight="600">${l}</text>
+`).join('')}
+<rect x="30" y="82" width="200" height="26" rx="5" fill="#21262d" stroke="#3fb950" stroke-width="1.5"/>
+<text x="130" y="94" text-anchor="middle" font-size="8" fill="#3fb950" font-weight="700">DECISION / CONSENSUS</text>
+<text x="130" y="104" text-anchor="middle" font-size="7.5" fill="#8b949e">Structured → productive → actionable</text>
+</svg>`},
+
+{id:'motivation-theories',name:'Motivation Theories',tagline:'Maslow · Herzberg · McGregor · McClelland',
+category:'interpersonal',
+usedIn:['9.4'],
+desc:'Frameworks explaining what motivates people at work. Key theories: Maslow\'s Hierarchy of Needs, Herzberg\'s Hygiene/Motivators, McGregor\'s Theory X/Y, McClelland\'s Achievement/Affiliation/Power needs, and Vroom\'s Expectancy Theory.',
+when:'Develop Team, Manage Team — when designing team environments, recognition programs, or understanding why team performance is declining.',
+tip:'Herzberg: hygiene factors (salary, working conditions) only PREVENT dissatisfaction — they don\'t motivate. True motivators are achievement, recognition, and the work itself.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<polygon points="130,8 245,100 15,100" fill="none" stroke="#38bcd6" stroke-width="1.5"/>
+<polygon points="130,8 245,100 15,100" fill="#38bcd611"/>
+<line x1="60" y1="66" x2="200" y2="66" stroke="#38bcd633" stroke-width="1"/>
+<line x1="85" y1="44" x2="175" y2="44" stroke="#38bcd633" stroke-width="1"/>
+<line x1="110" y1="26" x2="150" y2="26" stroke="#38bcd633" stroke-width="1"/>
+<text x="130" y="16" text-anchor="middle" font-size="7.5" fill="#38bcd6">Self-Actualisation</text>
+<text x="130" y="38" text-anchor="middle" font-size="7.5" fill="#38bcd6">Esteem</text>
+<text x="130" y="58" text-anchor="middle" font-size="7.5" fill="#38bcd6">Social / Belonging</text>
+<text x="130" y="78" text-anchor="middle" font-size="7.5" fill="#38bcd6">Safety</text>
+<text x="130" y="96" text-anchor="middle" font-size="7.5" fill="#38bcd6">Physiological</text>
+<text x="5" y="12" font-size="8" fill="#8b949e">Maslow's Hierarchy</text>
+</svg>`},
+
+// ─── GOVERNANCE & OTHER ───────────────────────────────────────────────
+{id:'expert-judgment',name:'Expert Judgment',tagline:'Leverage specialised knowledge to inform decisions',
+category:'governance',
+usedIn:['4.1','4.2','5.1','6.1','7.1','8.1','9.1','10.1','11.1','12.1','13.1'],
+desc:'Using the expertise of individuals or groups with specialised knowledge or training in relevant areas to inform project decisions. Experts may be internal (team members, functional managers) or external (consultants, PMO).',
+when:'Virtually every planning process — developing the project charter, planning scope, schedule, cost, quality, risk, and procurement.',
+tip:'Expert judgment is listed in almost every PMBOK process. On the exam, when no other tool seems appropriate, expert judgment is almost always a valid answer.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="13" text-anchor="middle" font-size="9" fill="#8b949e" font-weight="700">SOURCES OF EXPERT JUDGMENT</text>
+${[['PMO',28,40,'#58a6ff'],['SMEs',90,25,'#3fb950'],['Consultants',175,25,'#f0b429'],['Stakeholders',230,40,'#bc8cff'],['Team',200,75,'#f85149'],['Industry Peers',75,82,'#38bcd6']].map(([label,x,y,c])=>`
+<ellipse cx="${x}" cy="${y}" rx="26" ry="13" fill="${c}22" stroke="${c}" stroke-width="1.2"/>
+<text x="${x}" y="${y+4}" text-anchor="middle" font-size="8" fill="${c}" font-weight="600">${label}</text>
+<line x1="${x+(x<130?24:-24)}" y1="${y}" x2="${130+(x<130?-22:22)}" y2="58" stroke="${c}" stroke-width="0.8" opacity="0.5" stroke-dasharray="3,2"/>
+`).join('')}
+<circle cx="130" cy="58" r="22" fill="#8b949e22" stroke="#8b949e" stroke-width="2"/>
+<text x="130" y="55" text-anchor="middle" font-size="8.5" fill="#8b949e" font-weight="700">PM</text>
+<text x="130" y="66" text-anchor="middle" font-size="7.5" fill="#8b949e">Decision</text>
+</svg>`},
+
+{id:'meetings',name:'Meetings',tagline:'Structured exchange — must have agenda + minutes',
+category:'governance',
+usedIn:['4.1','4.2','4.3','4.4','10.2','13.3'],
+desc:'One of the most frequently used tools in PMBOK — meetings facilitate information exchange, decision-making, and stakeholder engagement. Effective meetings have a clear agenda, time-boxed discussion, clear owners for action items, and documented minutes.',
+when:'Used in nearly every process. Critical for kickoff, status reviews, change control board, stakeholder engagement, and retrospectives.',
+tip:'Meetings without agendas are a top cause of wasted time. Document decisions and action items immediately — a meeting without minutes effectively didn\'t happen.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="10" y="8" width="240" height="100" rx="6" fill="#161b22" stroke="#8b949e" stroke-width="1.5"/>
+<rect x="10" y="8" width="240" height="20" rx="6" fill="#21262d"/>
+<text x="130" y="22" text-anchor="middle" font-size="9" fill="#8b949e" font-weight="700">MEETING CHECKLIST</text>
+${[['✓ Clear objective stated','#3fb950'],['✓ Agenda sent 24 hrs before','#3fb950'],['✓ Right people invited','#3fb950'],['✓ Action items captured','#3fb950'],['✓ Minutes distributed after','#3fb950'],['✗ No agenda → cancel it','#f85149']].map(([item,c],i)=>`
+<text x="22" y="${38+i*13}" font-size="8.5" fill="${c}">${item}</text>
+`).join('')}
+</svg>`},
+
+{id:'salience-model',name:'Salience Model',tagline:'Power · Urgency · Legitimacy — 3-attribute prioritisation',
+category:'governance',
+usedIn:['13.1'],
+desc:'A stakeholder classification model that uses three attributes to prioritise stakeholders: Power (influence over decisions), Urgency (need for immediate attention), and Legitimacy (appropriateness of involvement). Overlaps define priority levels.',
+when:'Identify Stakeholders — to classify and prioritise stakeholders when the stakeholder list is large and complex.',
+tip:'A stakeholder with all three attributes (Power + Urgency + Legitimacy) is a "definitive" stakeholder and demands immediate, high-priority engagement.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<circle cx="100" cy="48" r="38" fill="#58a6ff18" stroke="#58a6ff" stroke-width="1.5"/>
+<circle cx="160" cy="48" r="38" fill="#3fb95018" stroke="#3fb950" stroke-width="1.5"/>
+<circle cx="130" cy="82" r="38" fill="#f0b42918" stroke="#f0b429" stroke-width="1.5"/>
+<text x="72" y="30" text-anchor="middle" font-size="9" fill="#58a6ff" font-weight="700">Power</text>
+<text x="188" y="30" text-anchor="middle" font-size="9" fill="#3fb950" font-weight="700">Urgency</text>
+<text x="130" y="112" text-anchor="middle" font-size="9" fill="#f0b429" font-weight="700">Legitimacy</text>
+<text x="118" y="46" text-anchor="middle" font-size="7" fill="#c9d1d9">Dominant</text>
+<text x="143" y="46" text-anchor="middle" font-size="7" fill="#c9d1d9">Dangerous</text>
+<text x="105" y="76" text-anchor="middle" font-size="7" fill="#c9d1d9">Dependent</text>
+<text x="155" y="76" text-anchor="middle" font-size="7" fill="#c9d1d9">Demanding</text>
+<text x="130" y="64" text-anchor="middle" font-size="8" fill="#fff" font-weight="700">Definitive</text>
+</svg>`},
+
+{id:'decomposition',name:'Decomposition',tagline:'Break scope into manageable work packages',
+category:'governance',
+usedIn:['5.3','5.4','6.2'],
+desc:'A technique for dividing and subdividing project scope and deliverables into smaller, more manageable components. Applied to create the WBS (scope decomposition) and to define individual schedule activities.',
+when:'Create WBS, Define Activities — any time you need to convert high-level scope into specific, estimable, and assignable work packages.',
+tip:'Work packages are the lowest level of the WBS — they should be "small enough to estimate, assign, and monitor" without being so small that they create unnecessary administrative overhead.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="90" y="5" width="80" height="18" rx="4" fill="#8b949e33" stroke="#8b949e" stroke-width="1.5"/>
+<text x="130" y="17" text-anchor="middle" font-size="8.5" fill="#8b949e" font-weight="700">PROJECT (L1)</text>
+<line x1="130" y1="23" x2="65" y2="36" stroke="#8b949e" stroke-width="1"/>
+<line x1="130" y1="23" x2="130" y2="36" stroke="#8b949e" stroke-width="1"/>
+<line x1="130" y1="23" x2="195" y2="36" stroke="#8b949e" stroke-width="1"/>
+${[['Phase 1',35,36,'#58a6ff'],['Phase 2',112,36,'#f0b429'],['Phase 3',168,36,'#3fb950']].map(([l,x,y,c])=>`
+<rect x="${x}" y="${y}" width="58" height="16" rx="3" fill="${c}22" stroke="${c}" stroke-width="1.2"/>
+<text x="${x+29}" y="${y+11}" text-anchor="middle" font-size="8" fill="${c}">${l} (L2)</text>
+`).join('')}
+${[[35,65,'WP 1.1','#58a6ff'],[75,65,'WP 1.2','#58a6ff'],[112,65,'WP 2.1','#f0b429'],[152,65,'WP 2.2','#f0b429'],[168,65,'WP 3.1','#3fb950']].map(([x,y,l,c])=>`
+<rect x="${x}" y="${y}" width="36" height="14" rx="2" fill="${c}33" stroke="${c}" stroke-width="0.8"/>
+<text x="${x+18}" y="${y+10}" text-anchor="middle" font-size="7" fill="${c}">${l}</text>
+`).join('')}
+<line x1="64" y1="52" x2="53" y2="65" stroke="#58a6ff" stroke-width="0.7"/>
+<line x1="64" y1="52" x2="93" y2="65" stroke="#58a6ff" stroke-width="0.7"/>
+<line x1="141" y1="52" x2="131" y2="65" stroke="#f0b429" stroke-width="0.7"/>
+<line x1="141" y1="52" x2="170" y2="65" stroke="#f0b429" stroke-width="0.7"/>
+<text x="130" y="95" text-anchor="middle" font-size="7.5" fill="#8b949e">L3 = Work Packages (estimable, assignable)</text>
+<text x="130" y="108" text-anchor="middle" font-size="7.5" fill="#8b949e">L4+ = Activities (for schedule decomposition)</text>
+</svg>`},
+
+{id:'bidder-conference',name:'Bidder Conference',tagline:'Level the playing field before proposals are submitted',
+category:'governance',
+usedIn:['12.2'],
+desc:'Also called a contractor conference, vendor conference, or pre-bid conference. A meeting with all prospective sellers before proposal submission to ensure all have a clear and common understanding of the procurement requirements.',
+when:'Conduct Procurements — held before the proposal deadline to allow sellers to ask questions and receive clarifications.',
+tip:'All questions and answers from a bidder conference must be distributed in writing to ALL prospective sellers — not just the one who asked. This maintains fairness.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="80" y="8" width="100" height="22" rx="5" fill="#8b949e33" stroke="#8b949e" stroke-width="1.5"/>
+<text x="130" y="23" text-anchor="middle" font-size="9" fill="#8b949e" font-weight="700">BUYER (PM)</text>
+<text x="130" y="35" text-anchor="middle" font-size="8" fill="#8b949e">RFP / Requirements</text>
+<line x1="130" y1="38" x2="55" y2="58" stroke="#8b949e" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="130" y1="38" x2="130" y2="58" stroke="#8b949e" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="130" y1="38" x2="205" y2="58" stroke="#8b949e" stroke-width="1" stroke-dasharray="3,2"/>
+${[[55,58,'#58a6ff','Vendor A'],[130,58,'#f0b429','Vendor B'],[205,58,'#3fb950','Vendor C']].map(([x,y,c,l])=>`
+<rect x="${x-25}" y="${y}" width="50" height="22" rx="4" fill="${c}22" stroke="${c}" stroke-width="1.2"/>
+<text x="${x}" y="${y+14}" text-anchor="middle" font-size="8.5" fill="${c}" font-weight="600">${l}</text>
+`).join('')}
+<rect x="30" y="90" width="200" height="18" rx="4" fill="#f0b42922" stroke="#f0b429" stroke-width="1.5"/>
+<text x="130" y="102" text-anchor="middle" font-size="8" fill="#f0b429" font-weight="600">All Q&amp;As distributed to ALL vendors</text>
+</svg>`},
+
+// ─── ADDITIONAL TOOLS ──────────────────────────────────────────────────────
+
+{id:'regression-analysis',name:'Regression Analysis',tagline:'Statistical model linking cause to outcome',
+category:'data-analysis',
+usedIn:['8.1','11.4'],
+desc:'A statistical method that examines the relationship between a dependent variable and one or more independent variables. In project management, used to predict cost or schedule outcomes based on historical project variables.',
+when:'Plan Quality Management, Perform Quantitative Risk Analysis — when historical data exists and you need to predict future performance based on known drivers.',
+tip:'R² (coefficient of determination) measures model fit. R²=0.90 means 90% of outcome variance is explained by the predictors. Always validate the model before using it for major decisions.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="32" y1="10" x2="32" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<line x1="32" y1="95" x2="245" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<text x="138" y="108" text-anchor="middle" font-size="8" fill="#8b949e">Complexity Score →</text>
+<text x="10" y="52" font-size="7.5" fill="#8b949e" writing-mode="vertical-rl" transform="rotate(-90,10,52)">Cost ($K)</text>
+${[[45,82],[58,75],[72,68],[85,63],[100,57],[115,51],[130,46],[145,41],[162,35],[178,29],[195,24],[215,18]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.5" fill="#58a6ff88" stroke="#58a6ff" stroke-width="0.8"/>`).join('')}
+<line x1="38" y1="88" x2="222" y2="17" stroke="#3fb950" stroke-width="2"/>
+<text x="224" y="17" font-size="8" fill="#3fb950" font-weight="700">y=mx+b</text>
+<rect x="158" y="55" width="78" height="30" rx="4" fill="#21262d" stroke="#30363d"/>
+<text x="197" y="68" text-anchor="middle" font-size="8.5" fill="#8b949e">R² = 0.94</text>
+<text x="197" y="80" text-anchor="middle" font-size="8.5" fill="#3fb950">Strong fit ✓</text>
+</svg>`},
+
+{id:'tornado-diagram',name:'Tornado Diagram',tagline:'Ranked sensitivity bars — widest = biggest risk driver',
+category:'data-representation',
+usedIn:['11.4'],
+desc:'A bar chart from sensitivity analysis where variables are ranked by their impact range — widest bars on top, narrowest on the bottom, creating a tornado shape. Shows which uncertain inputs drive the most variance in the project outcome.',
+when:'Perform Quantitative Risk Analysis — after a sensitivity analysis, to communicate which variables have the greatest potential effect on the project objective (e.g., NPV or project cost).',
+tip:'The wider the bar, the more that variable can swing the result. Focus response planning on the top 2-3 variables. The tornado shape gives it its name.',
+visual:()=>{
+  const vars=[['Market Demand',36,100],['Labor Cost',50,95],['Vendor Price',64,90],['Tech Complexity',76,88],['Scope Changes',88,86]];
+  const lo=30,hi=110,base=70,ox=80,tw=150;
+  return `<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="11" text-anchor="middle" font-size="9" fill="#f0b429" font-weight="700">SENSITIVITY (Impact on NPV)</text>
+<line x1="${ox+(base-lo)/(hi-lo)*tw}" y1="13" x2="${ox+(base-lo)/(hi-lo)*tw}" y2="105" stroke="#58a6ff" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="${ox+(base-lo)/(hi-lo)*tw}" y="113" text-anchor="middle" font-size="7.5" fill="#8b949e">Base</text>
+${vars.map(([label,l,h],i)=>{
+  const bx=ox+(l-lo)/(hi-lo)*tw;
+  const bw=(h-l)/(hi-lo)*tw;
+  const y=16+i*17;
+  const c=i===0?'#f85149':i===1?'#f0b429':'#58a6ff';
+  return `<rect x="${bx}" y="${y}" width="${bw}" height="13" rx="2" fill="${c}44" stroke="${c}" stroke-width="1"/>
+<text x="${ox-2}" y="${y+9}" text-anchor="end" font-size="8" fill="#c9d1d9">${label}</text>`;
+}).join('')}
+</svg>`;
+}},
+
+{id:'s-curve',name:'S-Curve',tagline:'Cumulative cost or progress plotted over time',
+category:'data-representation',
+usedIn:['7.4','4.5'],
+desc:'A graph showing cumulative value (cost, labour hours, work completed) over time. The S-shape reflects slow project start, acceleration in execution, and tapering at closure. Used to display PV, EV, and AC in Earned Value Management.',
+when:'Control Costs, Monitor & Control Project Work — to compare planned vs. actual cumulative spend and detect cost/schedule variances visually.',
+tip:'In EVM, plot three S-curves together: PV (planned), EV (earned), and AC (actual). The vertical gap between EV and AC = Cost Variance. The horizontal gap between EV and PV = Schedule Variance.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="32" y1="8" x2="32" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<line x1="32" y1="95" x2="242" y2="95" stroke="#30363d" stroke-width="1.5"/>
+<text x="138" y="108" text-anchor="middle" font-size="8" fill="#8b949e">Time →</text>
+<text x="10" y="52" font-size="7.5" fill="#8b949e" writing-mode="vertical-rl" transform="rotate(-90,10,52)">Cum. Cost</text>
+<text x="12" y="12" font-size="7.5" fill="#8b949e">100%</text>
+<text x="12" y="95" font-size="7.5" fill="#8b949e">0%</text>
+<path d="M32,94 C60,93 75,83 105,67 S155,28 240,10" fill="none" stroke="#58a6ff" stroke-width="2" stroke-dasharray="5,3"/>
+<path d="M32,94 C60,93 72,86 100,72 S148,40 215,22" fill="none" stroke="#3fb950" stroke-width="2"/>
+<path d="M32,94 C58,93 70,88 98,76 S145,48 210,28" fill="none" stroke="#f85149" stroke-width="2"/>
+<text x="242" y="11" font-size="8" fill="#58a6ff" font-weight="700">PV</text>
+<text x="217" y="20" font-size="8" fill="#3fb950" font-weight="700">EV</text>
+<text x="212" y="27" font-size="8" fill="#f85149" font-weight="700">AC</text>
+<line x1="155" y1="72" x2="155" y2="50" stroke="#f0b429" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="160" y="62" font-size="7.5" fill="#f0b429">CV</text>
+<line x1="130" y1="55" x2="155" y2="55" stroke="#bc8cff" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="138" y="51" font-size="7.5" fill="#bc8cff">SV</text>
+</svg>`},
+
+{id:'gantt-chart',name:'Gantt / Bar Chart',tagline:'Activity bars on a time axis — primary schedule view',
+category:'data-representation',
+usedIn:['6.5','6.6'],
+desc:'A horizontal bar chart representing the project schedule. Each activity is shown as a bar spanning its planned start to finish date. Widely used to communicate schedule status and dependencies to stakeholders at all levels.',
+when:'Develop Schedule, Control Schedule — as the primary schedule communication tool and for tracking actual vs. planned progress.',
+tip:'Gantt charts show WHEN but not WHY activities are sequenced that way. For schedule logic and criticality, you still need the network diagram. The Gantt alone hides dependencies.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="68" y="5" width="187" height="12" rx="2" fill="#21262d"/>
+${[0,1,2,3,4,5,6,7,8].map(i=>`<text x="${71+i*22}" y="14" font-size="7" fill="#8b949e">W${i+1}</text><line x1="${69+i*22}" y1="15" x2="${69+i*22}" y2="110" stroke="#30363d" stroke-width="0.5"/>`).join('')}
+${[['Requirements',0,3,'#58a6ff',1],['Design',2,4,'#f0b429',0.7],['Development',4,7,'#3fb950',0.5],['Testing',6.5,8,'#bc8cff',0.1],['Deployment',8,1,'#f85149',0]].map(([task,start,dur,c,done],i)=>`
+<text x="64" y="${26+i*17}" text-anchor="end" font-size="8" fill="#c9d1d9">${task}</text>
+<rect x="${69+start*22}" y="${18+i*17}" width="${dur*22}" height="12" rx="2" fill="${c}33" stroke="${c}" stroke-width="1.2"/>
+${done>0?`<rect x="${69+start*22}" y="${18+i*17}" width="${dur*22*done}" height="12" rx="2" fill="${c}77"/>`:''}
+`).join('')}
+<line x1="${69+6*22}" y1="5" x2="${69+6*22}" y2="110" stroke="#f0b429" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="${71+6*22}" y="12" font-size="7.5" fill="#f0b429">Today</text>
+</svg>`},
+
+{id:'leads-lags',name:'Leads & Lags',tagline:'Lead = overlap; Lag = mandatory wait between activities',
+category:'scheduling',
+usedIn:['6.3','6.5'],
+desc:'A Lead allows a successor activity to start before its predecessor finishes (negative lag / acceleration). A Lag adds a deliberate waiting period between activities (positive delay). Both refine schedule network logic beyond simple dependency types.',
+when:'Sequence Activities, Develop Schedule — when activities have complex temporal relationships that a simple FS/SS/FF dependency alone cannot express.',
+tip:'Lead = negative lag = overlap. A FS+lead-2d means the successor can start 2 days BEFORE the predecessor finishes. Overusing leads is unplanned fast-tracking. Lags model real-world constraints like curing time or mandatory review periods.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="130" y1="5" x2="130" y2="110" stroke="#30363d" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="65" y="13" text-anchor="middle" font-size="9" fill="#3fb950" font-weight="700">LEAD (overlap)</text>
+<text x="195" y="13" text-anchor="middle" font-size="9" fill="#f85149" font-weight="700">LAG (delay)</text>
+<rect x="8" y="20" width="58" height="16" rx="3" fill="#3fb95022" stroke="#3fb950" stroke-width="1.5"/>
+<text x="37" y="31" text-anchor="middle" font-size="8.5" fill="#3fb950">Task A</text>
+<rect x="46" y="40" width="58" height="16" rx="3" fill="#3fb95022" stroke="#3fb950" stroke-width="1.5"/>
+<text x="75" y="51" text-anchor="middle" font-size="8.5" fill="#3fb950">Task B</text>
+<text x="65" y="68" text-anchor="middle" font-size="8" fill="#3fb950">Lead = −2d</text>
+<text x="65" y="79" text-anchor="middle" font-size="7.5" fill="#8b949e">B starts before A ends</text>
+<text x="65" y="90" text-anchor="middle" font-size="7.5" fill="#3fb950">Saves 2 days ↓</text>
+<rect x="138" y="20" width="58" height="16" rx="3" fill="#f8514922" stroke="#f85149" stroke-width="1.5"/>
+<text x="167" y="31" text-anchor="middle" font-size="8.5" fill="#f85149">Pour Slab</text>
+<rect x="180" y="56" width="58" height="16" rx="3" fill="#f8514922" stroke="#f85149" stroke-width="1.5"/>
+<text x="209" y="67" text-anchor="middle" font-size="8.5" fill="#f85149">Next Pour</text>
+<rect x="148" y="39" width="38" height="13" rx="3" fill="#f0b42922" stroke="#f0b429" stroke-width="1.2"/>
+<text x="167" y="49" text-anchor="middle" font-size="8" fill="#f0b429">+3d cure</text>
+<text x="195" y="84" text-anchor="middle" font-size="7.5" fill="#8b949e">Mandatory wait</text>
+</svg>`},
+
+{id:'inspection',name:'Inspection',tagline:'Formal examination of deliverables for conformance',
+category:'governance',
+usedIn:['5.5','8.3'],
+desc:'A structured examination of a work product to determine whether it conforms to documented requirements and standards. May involve measuring, examining, and testing. The output of a successful inspection is Verified Deliverables.',
+when:'Control Quality — to verify deliverables before passing them to Validate Scope. Also used in contract compliance (12.3).',
+tip:'Inspection = checks the PRODUCT. Audit = checks the PROCESS. Inspection output = Verified Deliverables → those then go to Validate Scope for customer acceptance. Know this sequence.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="8" y="10" width="100" height="85" rx="6" fill="#161b22" stroke="#8b949e" stroke-width="1.5"/>
+<text x="58" y="26" text-anchor="middle" font-size="8.5" fill="#8b949e" font-weight="700">DELIVERABLE</text>
+${[['Req 1: Auth','✓'],['Req 2: Dashboard','✓'],['Req 3: Reports','✗'],['Req 4: Export','✓'],['Req 5: Audit log','✓']].map(([r,s],i)=>`
+<text x="14" y="${38+i*14}" font-size="8" fill="${s==='✓'?'#c9d1d9':'#f85149'}">${r}</text>
+<text x="101" y="${38+i*14}" text-anchor="end" font-size="10" fill="${s==='✓'?'#3fb950':'#f85149'}" font-weight="700">${s}</text>
+`).join('')}
+<line x1="108" y1="55" x2="148" y2="55" stroke="#8b949e" stroke-width="1.5" marker-end="url(#sa)"/>
+<circle cx="165" cy="55" r="16" fill="#21262d" stroke="#f0b429" stroke-width="2"/>
+<text x="165" y="52" text-anchor="middle" font-size="13">🔍</text>
+<text x="165" y="65" text-anchor="middle" font-size="7.5" fill="#f0b429">Inspector</text>
+<line x1="181" y1="55" x2="218" y2="55" stroke="#3fb950" stroke-width="1.5" marker-end="url(#sa)"/>
+<text x="240" y="44" text-anchor="middle" font-size="8" fill="#3fb950" font-weight="700">Verified</text>
+<text x="240" y="55" text-anchor="middle" font-size="8" fill="#3fb950">Deliverable</text>
+<text x="240" y="70" text-anchor="middle" font-size="7.5" fill="#f85149">1 defect →</text>
+<text x="240" y="80" text-anchor="middle" font-size="7.5" fill="#f85149">Rework</text>
+</svg>`},
+
+{id:'audits',name:'Quality Audits',tagline:'Independent review — are we following the right process?',
+category:'governance',
+usedIn:['8.2','12.3'],
+desc:'A structured, independent review to determine whether project activities comply with organisational and project policies, processes, and procedures. Identifies good practices, non-conformancies, gaps, and opportunities for process improvement.',
+when:'Manage Quality (8.2) — to verify the project is using the right processes (QA). Also Conduct/Control Procurements for procurement process compliance.',
+tip:'Audit = checks the PROCESS. Inspection = checks the PRODUCT. The goal of QA audits is to improve processes so future deliverables are better, not just to find current defects.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="10" y="8" width="240" height="15" rx="3" fill="#21262d"/>
+<text x="130" y="19" text-anchor="middle" font-size="9" fill="#58a6ff" font-weight="700">QUALITY AUDIT CHECKLIST</text>
+${[['Process documented?','Yes','#3fb950'],['Process followed?','Partially','#f0b429'],['Records kept?','Yes','#3fb950'],['Lessons captured?','No','#f85149'],['Tools used correctly?','Yes','#3fb950']].map(([q,a,c],i)=>`
+<rect x="10" y="${26+i*17}" width="240" height="14" rx="2" fill="${i%2?'#161b22':'#1a1f26'}"/>
+<text x="15" y="${36+i*17}" font-size="8.5" fill="#c9d1d9">${q}</text>
+<rect x="192" y="${27+i*17}" width="54" height="12" rx="3" fill="${c}22" stroke="${c}" stroke-width="1"/>
+<text x="219" y="${36+i*17}" text-anchor="middle" font-size="8.5" fill="${c}" font-weight="700">${a}</text>
+`).join('')}
+</svg>`},
+
+{id:'power-interest-grid',name:'Power/Interest Grid',tagline:'4-quadrant stakeholder map — engagement strategy',
+category:'governance',
+usedIn:['13.1'],
+desc:'A 2×2 matrix that classifies stakeholders by their level of authority (power) and level of concern for project outcomes (interest). Each quadrant yields a distinct engagement strategy: Manage Closely, Keep Satisfied, Keep Informed, or Monitor.',
+when:'Identify Stakeholders — to determine how much attention and what type of engagement each stakeholder warrants throughout the project.',
+tip:'High power + high interest = Manage Closely (your critical stakeholders). High power + low interest = Keep Satisfied — never ignore this group! Stakeholder positions shift over time; revisit the grid at major milestones.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<line x1="130" y1="8" x2="130" y2="107" stroke="#30363d" stroke-width="1.5"/>
+<line x1="10" y1="57" x2="250" y2="57" stroke="#30363d" stroke-width="1.5"/>
+<text x="130" y="113" text-anchor="middle" font-size="8" fill="#8b949e">Interest →</text>
+<text x="4" y="57" font-size="7.5" fill="#8b949e" writing-mode="vertical-rl" transform="rotate(-90,4,57)">Power ↑</text>
+<rect x="11" y="9" width="117" height="46" rx="3" fill="#f0b42908"/>
+<rect x="131" y="9" width="117" height="46" rx="3" fill="#3fb95012"/>
+<rect x="11" y="59" width="117" height="46" rx="3" fill="#8b949e08"/>
+<rect x="131" y="59" width="117" height="46" rx="3" fill="#58a6ff08"/>
+<text x="69" y="26" text-anchor="middle" font-size="8" fill="#f0b429" font-weight="600">Keep Satisfied</text>
+<text x="69" y="37" text-anchor="middle" font-size="7.5" fill="#f0b42988">Hi Power · Lo Interest</text>
+<text x="189" y="26" text-anchor="middle" font-size="8" fill="#3fb950" font-weight="700">Manage Closely</text>
+<text x="189" y="37" text-anchor="middle" font-size="7.5" fill="#3fb95088">Hi Power · Hi Interest</text>
+<text x="69" y="76" text-anchor="middle" font-size="8" fill="#8b949e" font-weight="600">Monitor</text>
+<text x="69" y="87" text-anchor="middle" font-size="7.5" fill="#8b949e88">Lo Power · Lo Interest</text>
+<text x="189" y="76" text-anchor="middle" font-size="8" fill="#58a6ff" font-weight="600">Keep Informed</text>
+<text x="189" y="87" text-anchor="middle" font-size="7.5" fill="#58a6ff88">Lo Power · Hi Interest</text>
+</svg>`},
+
+{id:'risk-response-strategies',name:'Risk Response Strategies',tagline:'Threat: Avoid·Transfer·Mitigate·Accept | Opp: Exploit·Share·Enhance',
+category:'governance',
+usedIn:['11.5'],
+desc:'For negative risks (threats): Escalate, Avoid (eliminate), Transfer (shift), Mitigate (reduce P or I), Accept. For positive risks (opportunities): Escalate, Exploit (ensure it happens), Share (partner up), Enhance (increase P or I), Accept.',
+when:'Plan Risk Responses — after qualitative and quantitative analysis, to select the best response for each significant risk and assign a risk owner.',
+tip:'Transfer (e.g. buying insurance, fixed-price contract) shifts financial impact but the underlying risk still exists. Mitigate reduces probability OR impact — not necessarily both. Escalate is the 5th strategy for risks outside PM authority.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="10" y="8" width="115" height="98" rx="5" fill="#f8514908" stroke="#f85149" stroke-width="1.5"/>
+<text x="67" y="22" text-anchor="middle" font-size="9" fill="#f85149" font-weight="700">⚠ THREATS</text>
+<rect x="135" y="8" width="115" height="98" rx="5" fill="#3fb95008" stroke="#3fb950" stroke-width="1.5"/>
+<text x="192" y="22" text-anchor="middle" font-size="9" fill="#3fb950" font-weight="700">✦ OPPORTUNITIES</text>
+${[['Escalate','Escalate'],['Avoid','Exploit'],['Transfer','Share'],['Mitigate','Enhance'],['Accept','Accept']].map(([t,o],i)=>`
+<rect x="14" y="${26+i*16}" width="107" height="13" rx="3" fill="#f8514918"/>
+<text x="67" y="${35+i*16}" text-anchor="middle" font-size="8.5" fill="#f85149" font-weight="${i===1||i===3?'700':'400'}">${t}</text>
+<rect x="139" y="${26+i*16}" width="107" height="13" rx="3" fill="#3fb95018"/>
+<text x="192" y="${35+i*16}" text-anchor="middle" font-size="8.5" fill="#3fb950" font-weight="${i===1||i===3?'700':'400'}">${o}</text>
+`).join('')}
+</svg>`},
+
+{id:'stakeholder-cube',name:'Stakeholder Cube',tagline:'3D model adding attitude axis to Power/Interest Grid',
+category:'governance',
+usedIn:['13.1'],
+desc:'An extension of the 2×2 Power/Interest Grid that adds a third dimension: the stakeholder\'s attitude toward the project (supportive to resistant). This creates a 3D classification cube that captures more nuance in stakeholder analysis.',
+when:'Identify Stakeholders — when stakeholder dynamics are complex and the 2D Power/Interest Grid is insufficient to differentiate engagement strategies.',
+tip:'The stakeholder cube is less commonly tested than the Power/Interest Grid but may appear as a distractor or in context of stakeholder classification models. Know it exists and what the 3 axes are.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="12" text-anchor="middle" font-size="9" fill="#bc8cff" font-weight="700">STAKEHOLDER CUBE</text>
+<polygon points="80,90 160,90 190,60 110,60" fill="#bc8cff08" stroke="#bc8cff" stroke-width="1.5"/>
+<polygon points="80,90 80,30 110,0 110,60" fill="#bc8cff14" stroke="#bc8cff" stroke-width="1.5"/>
+<polygon points="80,30 160,30 190,0 110,0" fill="#bc8cff20" stroke="#bc8cff" stroke-width="1.5"/>
+<line x1="80" y1="90" x2="80" y2="30" stroke="#bc8cff" stroke-width="1.5"/>
+<line x1="160" y1="90" x2="160" y2="30" stroke="#bc8cff88" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="160" y1="30" x2="190" y2="0" stroke="#bc8cff88" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="160" y1="90" x2="190" y2="60" stroke="#bc8cff" stroke-width="1.5"/>
+<text x="45" y="60" font-size="8" fill="#f0b429" writing-mode="vertical-rl" transform="rotate(-90,45,60)">Power ↑</text>
+<text x="130" y="103" text-anchor="middle" font-size="8" fill="#58a6ff">Interest →</text>
+<text x="205" y="45" font-size="8" fill="#3fb950" transform="rotate(-45,205,45)">Attitude →</text>
+<text x="200" y="108" font-size="7.5" fill="#8b949e">Adds: Supportive ↔ Resistant</text>
+</svg>`},
+
+{id:'procurement-negotiations',name:'Procurement Negotiations',tagline:'Reach a fair agreement with selected sellers',
+category:'governance',
+usedIn:['12.2'],
+desc:'The process of reaching a mutually agreeable understanding on all aspects of the procurement before signing the contract. Covers price, schedule, risk allocation, contract terms, intellectual property, payment terms, and project management procedures.',
+when:'Conduct Procurements — after a seller is selected, before the contract is signed. The goal is a contract that is fair and executable by both parties.',
+tip:'Not all procurements require extensive negotiation. Routine purchases or catalogue orders may go straight to PO. Negotiations are most important for complex, high-value, or long-term contracts.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="10" y="20" width="90" height="70" rx="6" fill="#58a6ff11" stroke="#58a6ff" stroke-width="1.5"/>
+<text x="55" y="38" text-anchor="middle" font-size="9" fill="#58a6ff" font-weight="700">BUYER</text>
+<text x="55" y="52" text-anchor="middle" font-size="7.5" fill="#8b949e">Budget: $500K</text>
+<text x="55" y="63" text-anchor="middle" font-size="7.5" fill="#8b949e">Time: 12 mo</text>
+<text x="55" y="74" text-anchor="middle" font-size="7.5" fill="#8b949e">Risk: Shared</text>
+<rect x="160" y="20" width="90" height="70" rx="6" fill="#3fb95011" stroke="#3fb950" stroke-width="1.5"/>
+<text x="205" y="38" text-anchor="middle" font-size="9" fill="#3fb950" font-weight="700">SELLER</text>
+<text x="205" y="52" text-anchor="middle" font-size="7.5" fill="#8b949e">Ask: $550K</text>
+<text x="205" y="63" text-anchor="middle" font-size="7.5" fill="#8b949e">Time: 14 mo</text>
+<text x="205" y="74" text-anchor="middle" font-size="7.5" fill="#8b949e">Risk: Min</text>
+<rect x="105" y="40" width="50" height="28" rx="4" fill="#f0b42922" stroke="#f0b429" stroke-width="1.5"/>
+<text x="130" y="53" text-anchor="middle" font-size="8.5" fill="#f0b429" font-weight="700">DEAL</text>
+<text x="130" y="63" text-anchor="middle" font-size="8" fill="#f0b429">$525K</text>
+<text x="130" y="105" text-anchor="middle" font-size="8" fill="#8b949e">Signed Contract</text>
+</svg>`},
+
+{id:'claims-administration',name:'Claims Administration',tagline:'Manage contested changes and disputes in procurements',
+category:'governance',
+usedIn:['12.3'],
+desc:'The process of managing claims, disputes, or appeals between the buyer and seller regarding a contract. Constructive changes are those claimed but not formally agreed to. Claims may be resolved through negotiation, mediation, arbitration, or litigation.',
+when:'Control Procurements — when either party believes they are entitled to something not explicitly agreed to, or when a change has been made without formal contract modification.',
+tip:'Claims are not the same as change requests. A claim is a DISPUTE — the seller says "I deserve extra payment for X." It must go through ADR (Alternative Dispute Resolution) procedures defined in the contract.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<text x="130" y="12" text-anchor="middle" font-size="9" fill="#f85149" font-weight="700">CLAIMS RESOLUTION PATH</text>
+${[['Claim Filed','A party submits dispute','#f85149',30],['Negotiation','Direct discussion','#f0b429',50],['Mediation','Neutral 3rd party','#58a6ff',70],['Arbitration','Binding decision','#bc8cff',90],['Litigation','Court of law','#f85149',110]].map(([s,d,c,x])=>`
+<rect x="${x-20}" y="25" width="40" height="25" rx="4" fill="${c}22" stroke="${c}" stroke-width="1.5"/>
+<text x="${x}" y="37" text-anchor="middle" font-size="7.5" fill="${c}" font-weight="700">${s}</text>
+<text x="${x}" y="47" text-anchor="middle" font-size="6.5" fill="#8b949e">${d}</text>
+`).join('')}
+${[30,50,70,90].map(x=>`<line x1="${x+20}" y1="37" x2="${x+30}" y2="37" stroke="#30363d" stroke-width="1.5" marker-end="url(#sa)"/>`).join('')}
+<text x="130" y="75" text-anchor="middle" font-size="8.5" fill="#3fb950" font-weight="700">✓ Resolve early = less cost</text>
+<text x="130" y="88" text-anchor="middle" font-size="8" fill="#8b949e">Most contracts specify ADR before litigation</text>
+<text x="130" y="100" text-anchor="middle" font-size="8" fill="#f0b429">Unresolved claims = project risk</text>
+</svg>`},
+
+{id:'risk-management-plan',name:'Risk Management Plan',tagline:'The blueprint for how risk will be managed on the project',
+category:'governance',
+usedIn:['11.1'],
+desc:'A component of the project management plan that describes how risk management activities will be structured and performed. Defines methodology, roles and responsibilities, funding, timing, risk categories (Risk Breakdown Structure), probability and impact definitions, stakeholder risk tolerances, and reporting formats.',
+when:'Plan Risk Management (11.1) — created first, before any risks are identified. Every subsequent risk process references it for definitions, thresholds, and procedures.',
+tip:'The Risk Management Plan describes HOW you will manage risks. The Risk Register lists WHAT the risks are. Confusing the two is a classic exam trap. The RMP is an INPUT to Identify Risks, not an output.',
+visual:()=>`<svg viewBox="0 0 260 115" width="260" height="115" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif">
+<rect x="30" y="5" width="200" height="105" rx="6" fill="#161b22" stroke="#8b949e" stroke-width="1.5"/>
+<rect x="30" y="5" width="200" height="18" rx="6" fill="#21262d"/>
+<rect x="30" y="18" width="200" height="5" fill="#21262d"/>
+<text x="130" y="19" text-anchor="middle" font-size="9" fill="#8b949e" font-weight="700">RISK MANAGEMENT PLAN</text>
+${[
+  ['Methodology','Risk workshops + Delphi','#58a6ff'],
+  ['Roles & Responsibilities','Risk Owner per risk','#58a6ff'],
+  ['Budget','5% of project reserve','#f0b429'],
+  ['Timing','Monthly risk reviews','#f0b429'],
+  ['Risk Categories (RBS)','Tech · Ext · Org · PM','#bc8cff'],
+  ['P&I Definitions','VL/L/M/H/VH (0.05–0.9)','#bc8cff'],
+  ['Risk Appetite','Low — avoidance preferred','#3fb950']
+].map(([k,v,c],i)=>`
+<rect x="34" y="${27+i*12}" width="192" height="11" rx="1" fill="${i%2?'transparent':'#1a1f26'}"/>
+<text x="38" y="${35+i*12}" font-size="7.5" fill="${c}" font-weight="600">${k}:</text>
+<text x="148" y="${35+i*12}" font-size="7.5" fill="#c9d1d9">${v}</text>
+`).join('')}
+</svg>`},
+
+];
+
+// ─────────────────────────────────────────────────────────────────────
+//  FILTER CHIPS — SIDEBAR
+// ─────────────────────────────────────────────────────────────────────
+function buildFilterChips() {
+  // Process group chips
+  const pgEl = document.getElementById('pg-chips');
+  PG_ORDER.forEach(pg => {
+    const btn = document.createElement('button');
+    btn.className = 'chip active';
+    btn.dataset.pg = pg;
+    const c = PG_COLOR[pg];
+    btn.style.borderColor = c.border;
+    btn.style.color = c.label;
+    btn.innerHTML = `<span>${pg}</span>`;
+    btn.addEventListener('click', () => {
+      if (state.activeGroups.has(pg)) { state.activeGroups.delete(pg); btn.classList.remove('active'); btn.style.opacity='0.45'; }
+      else { state.activeGroups.add(pg); btn.classList.add('active'); btn.style.opacity='1'; }
+      applyFilters();
+    });
+    pgEl.appendChild(btn);
+  });
+
+  // KA chips
+  const kaEl = document.getElementById('ka-chips');
+  KA_ORDER.forEach(ka => {
+    const btn = document.createElement('button');
+    btn.className = 'chip active';
+    btn.dataset.ka = ka;
+    btn.style.borderColor = KA_COLOR[ka] + '80';
+    btn.style.color = KA_COLOR[ka];
+    btn.innerHTML = `<span class="dot" style="background:${KA_COLOR[ka]}"></span><span style="font-size:10px">${ka.replace('Communications','Comms')}</span>`;
+    btn.addEventListener('click', () => {
+      if (state.activeKAs.has(ka)) { state.activeKAs.delete(ka); btn.classList.remove('active'); btn.style.opacity='0.4'; }
+      else { state.activeKAs.add(ka); btn.classList.add('active'); btn.style.opacity='1'; }
+      applyFilters();
+    });
+    kaEl.appendChild(btn);
+  });
+
+  // Display checkboxes
+  document.getElementById('chk-edges').addEventListener('change', e => {
+    state.showEdges = e.target.checked;
+    d3.selectAll('.edge-layer').attr('display', state.showEdges ? null : 'none');
+  });
+  document.getElementById('chk-milestones').addEventListener('change', e => {
+    state.showMilestones = e.target.checked;
+    d3.selectAll('.milestone-badge').attr('display', state.showMilestones ? null : 'none');
+  });
+  document.getElementById('chk-color-pg').addEventListener('change', e => {
+    state.colorByPG = e.target.checked;
+    refreshView();
+  });
+}
+
+function applyFilters() {
+  if (state.view === 'flow')     applyFlowFilters();
+  if (state.view === 'matrix')   renderMatrix();
+  if (state.view === 'timeline') renderTimeline();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SEARCH
+// ═══════════════════════════════════════════════════════════════════
+const searchEl = document.getElementById('search');
+let searchTimer;
+searchEl.addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    state.searchQuery = e.target.value.trim();
+    applyFilters();
+  }, 150);
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  VIEW SWITCHING
+// ═══════════════════════════════════════════════════════════════════
+function switchView(viewId) {
+  const sidebar = document.getElementById('sidebar');
+  const strip   = document.getElementById('milestone-strip');
+  const isMob   = window.innerWidth <= 768;
+
+  // Views where sidebar + milestone strip are always visible
+  const primaryViews = ['flow', 'timeline'];
+  const leaving = state.view;
+  const entering = viewId;
+
+  // Leaving a primary view → save sidebar state before hiding
+  if (primaryViews.includes(leaving) && !primaryViews.includes(entering)) {
+    state.sidebarWasCollapsed = isMob
+      ? !sidebar.classList.contains('mobile-open')
+      : sidebar.classList.contains('collapsed');
+    // Auto-hide
+    if (isMob) {
+      sidebar.classList.remove('mobile-open');
+      document.getElementById('sidebar-overlay').classList.remove('visible');
+    } else {
+      sidebar.classList.add('collapsed');
+    }
+    strip.style.display = 'none';
+  }
+
+  // Entering a primary view → restore sidebar state + show strip
+  if (!primaryViews.includes(leaving) && primaryViews.includes(entering)) {
+    if (isMob) {
+      // on mobile leave sidebar closed unless user opens it
+    } else {
+      if (!state.sidebarWasCollapsed) sidebar.classList.remove('collapsed');
+    }
+    strip.style.display = '';
+  }
+
+  state.view = viewId;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`view-${viewId}`).classList.add('active');
+  document.querySelector(`.vtab[data-view="${viewId}"]`).classList.add('active');
+  if (viewId === 'flow' && document.querySelector('#flow-svg-wrap svg') === null) renderFlowchart();
+  if (viewId === 'matrix') renderMatrix();
+  if (viewId === 'timeline') renderTimeline();
+  if (viewId === 'ka') renderKA();
+  if (viewId === 'tools') renderTools();
+}
+
+document.querySelectorAll('.vtab').forEach(tab => {
+  tab.addEventListener('click', () => switchView(tab.dataset.view));
+});
+
+function refreshView() {
+  const v = state.view;
+  if (v === 'flow')     { document.getElementById('flow-svg-wrap').innerHTML = ''; renderFlowchart(); }
+  if (v === 'matrix')   renderMatrix();
+  if (v === 'timeline') renderTimeline();
+  if (v === 'ka')       renderKA();
+  if (v === 'tools')    renderTools();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  TOOLS REFERENCE TAB
+// ═══════════════════════════════════════════════════════════════════
+const TOOL_CAT_COLOR = {
+  'data-gathering':   '#3fb950',
+  'data-analysis':    '#58a6ff',
+  'data-representation': '#f0b429',
+  'scheduling':       '#bc8cff',
+  'estimating':       '#f85149',
+  'interpersonal':    '#38bcd6',
+  'governance':       '#8b949e'
+};
+
 
 </script>
 </body>
