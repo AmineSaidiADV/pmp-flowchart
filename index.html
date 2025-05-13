@@ -3580,7 +3580,139 @@ const TOOL_CAT_COLOR = {
   'governance':       '#8b949e'
 };
 
+function renderTools() {
+  const q = (document.getElementById('tools-search').value || '').toLowerCase().trim();
+  const activeChip = document.querySelector('.tcat-chip.active');
+  const activeCat  = activeChip ? activeChip.dataset.cat : 'all';
 
+  const filtered = TOOLS.filter(t => {
+    const catMatch = activeCat === 'all' || t.category === activeCat;
+    const qMatch   = !q ||
+      t.name.toLowerCase().includes(q) ||
+      t.desc.toLowerCase().includes(q) ||
+      t.tagline.toLowerCase().includes(q) ||
+      t.when.toLowerCase().includes(q);
+    return catMatch && qMatch;
+  });
+
+  const count = document.getElementById('tools-count');
+  if (count) count.textContent = `${filtered.length} tool${filtered.length !== 1 ? 's' : ''}`;
+
+  const grid = document.getElementById('tools-grid');
+  if (!grid) return;
+
+  grid.innerHTML = filtered.map((t, i) => {
+    const c = TOOL_CAT_COLOR[t.category] || '#8b949e';
+    const label = CAT_LABEL[t.category] || t.category;
+    const svg = typeof t.visual === 'function' ? t.visual() : (t.visual || '');
+    const usedInHtml = t.usedIn && t.usedIn.length
+      ? `<div class="tool-usedin">Used in: ${t.usedIn.map(id => {
+          const p = PROCESSES.find(x => x.id === id);
+          return p ? `<span class="tool-pid" title="${p.name}">${id}</span>` : `<span class="tool-pid">${id}</span>`;
+        }).join('')}</div>`
+      : '';
+    return `
+    <div class="tool-card" style="animation-delay:${i * 0.03}s">
+      <div class="tool-card-head">
+        <span class="tool-cat-badge" style="background:${c}22;color:${c};border:1px solid ${c}44">${label}</span>
+      </div>
+      <div class="tool-name-row">
+        <div class="tool-name">${t.name}</div>
+        <div class="tool-tagline">${t.tagline}</div>
+      </div>
+      <div class="tool-visual">${svg}</div>
+      <div class="tool-body">
+        <div class="tool-desc">${t.desc}</div>
+        <div class="tool-when"><strong>When to use:</strong> ${t.when}</div>
+        ${usedInHtml}
+        <div class="tool-tip">${t.tip}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// wire up tools tab search + category chips
+(function initToolsEvents() {
+  const searchEl = document.getElementById('tools-search');
+  if (searchEl) searchEl.addEventListener('input', () => { if (state.view === 'tools') renderTools(); });
+
+  document.getElementById('tools-cat-chips').addEventListener('click', e => {
+    const chip = e.target.closest('.tcat-chip');
+    if (!chip) return;
+    document.querySelectorAll('.tcat-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    if (state.view === 'tools') renderTools();
+  });
+})();
+
+// ═══════════════════════════════════════════════════════════════════
+//  MATRIX FILTER BUTTONS
+// ═══════════════════════════════════════════════════════════════════
+document.getElementById('mf-all').addEventListener('click', function() {
+  setMatrixFilter('all', this);
+});
+document.getElementById('mf-input').addEventListener('click', function() {
+  setMatrixFilter('input', this);
+});
+document.getElementById('mf-output').addEventListener('click', function() {
+  setMatrixFilter('output', this);
+});
+function setMatrixFilter(mode, btn) {
+  document.querySelectorAll('#matrix-filter-btns .chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const wrap = document.getElementById('matrix-wrap');
+  wrap.dataset.filter = mode;
+  const table = document.getElementById('matrix-table');
+  if (!table) return;
+  table.querySelectorAll('tbody td:not(:first-child)').forEach(td => {
+    if (mode === 'all') { td.style.display = ''; return; }
+    const isInput  = td.classList.contains('cell-i') || td.classList.contains('cell-io');
+    const isOutput = td.classList.contains('cell-o') || td.classList.contains('cell-io');
+    td.style.display = (mode === 'input' && isInput) || (mode === 'output' && isOutput) || td.textContent === '' ? '' : 'none';
+    if (mode !== 'all' && !isInput && !isOutput) td.style.display = '';
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  THEME TOGGLE
+// ═══════════════════════════════════════════════════════════════════
+document.getElementById('theme-btn').addEventListener('click', function() {
+  const html = document.documentElement;
+  const isDark = html.dataset.theme === 'dark';
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  this.textContent = isDark ? '☾' : '☀';
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  RESET
+// ═══════════════════════════════════════════════════════════════════
+document.getElementById('reset-btn').addEventListener('click', () => {
+  PG_ORDER.forEach(pg => state.activeGroups.add(pg));
+  KA_ORDER.forEach(ka => state.activeKAs.add(ka));
+  state.searchQuery = '';
+  searchEl.value = '';
+  state.colorByPG = false;
+  document.getElementById('chk-color-pg').checked = false;
+  document.querySelectorAll('.chip').forEach(c => { c.classList.add('active'); c.style.opacity='1'; });
+  applyFilters();
+  closePanel();
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════════
+function init() {
+  buildMilestoneStrip();
+  buildFilterChips();
+  renderFlowchart();
+}
+
+// Wait for D3 to be available
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 </script>
 </body>
 </html>
