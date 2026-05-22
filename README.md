@@ -65,6 +65,8 @@ This tool is an **unofficial study aid** and is not affiliated with, endorsed by
 
 All process data is based on the **PMBOK® Guide — Sixth Edition**.
 
+> **Accuracy notice:** While every effort has been made to ensure the ITTO data, tool descriptions, and process details are correct, this tool may contain errors or omissions. Always cross-reference with the official PMBOK® Guide before your exam. If you spot a mistake, please [open an issue](https://github.com/AmineSaidiADV/pmp-flowchart/issues) so it can be corrected for everyone.
+
 ---
 
 ## License
